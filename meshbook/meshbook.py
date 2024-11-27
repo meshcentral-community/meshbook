@@ -251,8 +251,6 @@ class MeshcallerActions:
         # Calculate the total expected responses: tasks x target nodes
         expected_responses = len(playbook_yaml['tasks']) * len(target_ids)
 
-        print(expected_responses)
-
         # Send commands for all nodes at once
         for task in playbook_yaml['tasks']:
             await ready_for_next.wait()
