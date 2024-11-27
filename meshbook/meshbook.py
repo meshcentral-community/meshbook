@@ -296,7 +296,9 @@ class MeshcallerActions:
             await asyncio.sleep(1)
 
         # Exit gracefully
-        print("-=-" * 40)
+        if not args.silent or args.information:
+            print("-=-" * 40)
+
         updated_response_dict = MeshbookUtilities.translate_nodeids(responses_dict, global_list)
 
         if not args.nojson:
@@ -310,7 +312,7 @@ async def main():
     parser.add_argument("--nojson", action="store_true", help="Makes the program not output the JSON response data.")
     parser.add_argument("-pb", "--playbook", type=str, help="Path to the playbook file.", required=True)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output.")
-    parser.add_argument("-i", "--information", action="store_true", help="Output the calculations and other informational output.")
+    parser.add_argument("-i", "--information", action="store_true", help="Add the calculations and other informational data to the output.")
 
     global args
     args = parser.parse_args()
