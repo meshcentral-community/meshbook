@@ -13,11 +13,9 @@ Then make a yaml with a target and some commands! See below examples as a guidel
 To install, follow the following commands:<br>
 
 ```shell
-python3 -m venv ./venv
-``` 
-```shell
-source ./venv/bin/activate
 cd ./meshbook
+python3 -m venv ./venv
+source ./venv/bin/activate
 ```
 ```shell
 pip3 install -r requirements.txt
