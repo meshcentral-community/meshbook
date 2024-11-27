@@ -1,10 +1,15 @@
 ---
 name: Ping Multiple Points
 company: Temp-Agents
-#device: MSI
 tasks:
   - name: Ping CloudFlare
     command: "ping 1.1.1.1 -c 4"
 
   - name: ping Googoogle
     command: "ping 8.8.8.8 -c 4"
+
+  - name: ping Systemec
+    command: "ping ns.systemec.nl -c 4"
+  
+  - name: ping quad9
+    command: "ping 9.9.9.9 -c 4"

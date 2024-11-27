@@ -190,6 +190,7 @@ class MeshcallerProcessor:
                 ]
             })
         basic_ready_state.set()
+        ready_for_next.set()
 
     async def receive_processor(self, python_client: MeshcallerWebSocket):
         """Processes messages received from the WebSocket."""
@@ -202,7 +203,10 @@ class MeshcallerProcessor:
             elif action_type == 'msg':
                 print(json.dumps(message, indent=4))
                 response_counter += 1  # Increment response counter
-                ready_for_next.set()
+
+                print(response_counter % len(target_ids))
+                if response_counter % len(target_ids) == 0:
+                    ready_for_next.set()
             elif not args.silent:
                 print("Ignored action:", action_type)
 
@@ -213,9 +217,9 @@ class MeshcallerActions:
     @staticmethod
     async def process_arguments(python_client: MeshcallerWebSocket, playbook_path: str):
         """Executes tasks defined in the playbook."""
-        global response_counter, expected_responses
+        global response_counter, expected_responses, target_ids
 
-        await basic_ready_state.wait()
+        await basic_ready_state.wait()  # Wait for the basic data to be ready
 
         playbook_yaml = MeshcallerUtilities.read_yaml(playbook_path)
         target_ids = MeshcallerUtilities.get_target_ids(
@@ -238,11 +242,19 @@ class MeshcallerActions:
         # Calculate the total expected responses: tasks x target nodes
         expected_responses = len(playbook_yaml['tasks']) * len(target_ids)
 
+        print(expected_responses)
+
+        # Send commands for all nodes at once
         for task in playbook_yaml['tasks']:
-            run_command_template["cmds"] = task['command']
-            ready_for_next.clear()
-            await python_client.ws_send_data(json.dumps(run_command_template))
             await ready_for_next.wait()
+            run_command_template["cmds"] = task['command']
+            run_command_template["nodeids"] = target_ids  # Send to all target IDs at once
+            print("Running task:", task)
+            print("-=-" * 40)
+
+            # Send the command to all nodes in one go
+            await python_client.ws_send_data(json.dumps(run_command_template))
+            ready_for_next.clear()
 
         # Wait until all expected responses are received
         while response_counter < expected_responses:
