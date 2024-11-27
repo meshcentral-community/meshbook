@@ -16,26 +16,19 @@ expected_responses = 0
 basic_ready_state = asyncio.Event()
 ready_for_next = asyncio.Event()
 global_list = []
-
+responses_dict = {}
 
 class ScriptEndTrigger(Exception):
     """Custom Exception to handle script termination events."""
     pass
 
-
-class MeshcallerUtilities:
+class MeshbookUtilities:
     """Helper utility functions for the Meshcaller application."""
     
     @staticmethod
     def base64_encode(string: str) -> str:
         """Encode a string in Base64 format."""
         return b64encode(string.encode('utf-8')).decode()
-    
-    @staticmethod
-    def read_yaml(file_path: str) -> dict:
-        """Read a YAML file and return its content as a dictionary."""
-        with open(file_path, 'r') as file:
-            return yaml.safe_load(file)
     
     @staticmethod
     def get_target_ids(company: str = None, device: str = None) -> list:
@@ -74,8 +67,35 @@ class MeshcallerUtilities:
 
         return my_config[segment]
 
+    @staticmethod
+    def read_yaml(file_path: str) -> dict:
+        """Read a YAML file and return its content as a dictionary."""
+        with open(file_path, 'r') as file:
+            return yaml.safe_load(file)
 
-class MeshcallerWebSocket:
+    @staticmethod
+    def translate_nodeids(batches_dict, global_list) -> dict:
+        for batch_name, items in batches_dict.items():
+            
+            for item in items: # Process each item in the batch
+                node_id = item["nodeid"]  # Get the nodeid field
+                
+                real_name = None
+                for company in global_list:
+                    for machine in company["nodes"]:
+                        if machine["node_id"] == node_id:
+                            real_name = machine["node_name"]
+                            break
+                    if real_name:
+                        break
+
+                # If found, replace the nodeid with the real node name, otherwise mark it as "Unknown Node"
+                if real_name:
+                    item["nodeid"] = real_name
+
+        return batches_dict
+
+class MeshbookWebsocket:
     """Handles WebSocket connections and interactions."""
     
     def __init__(self):
@@ -116,7 +136,7 @@ class MeshcallerWebSocket:
 
     async def ws_handler(self, uri: str, username: str, password: str):
         """Main WebSocket connection handler."""
-        login_string = f'{MeshcallerUtilities.base64_encode(username)},{MeshcallerUtilities.base64_encode(password)}'
+        login_string = f'{MeshbookUtilities.base64_encode(username)},{MeshbookUtilities.base64_encode(password)}'
         ws_headers = {
             'User-Agent': 'MeshCentral API client',
             'x-meshauth': login_string
@@ -143,7 +163,7 @@ class MeshcallerWebSocket:
             print(f"An error occurred: {e}")
 
 
-class MeshcallerProcessor:
+class MeshbookProcessor:
     """Processes data received from the WebSocket."""
     
     def __init__(self):
@@ -196,23 +216,29 @@ class MeshcallerProcessor:
         basic_ready_state.set()
         ready_for_next.set()
 
-    async def receive_processor(self, python_client: MeshcallerWebSocket):
+    async def receive_processor(self, python_client: MeshbookWebsocket):
         """Processes messages received from the WebSocket."""
         global response_counter
+        temp_responses_list = []
         while True:
             message = await python_client.received_response_queue.get()
             action_type = message.get('action')
             if action_type in ('meshes', 'nodes'):
                 self.handle_basic_data(message[action_type])
             elif action_type == 'msg':
-                print(json.dumps(message, indent=4))
+                temp_responses_list.append(message)
+
                 response_counter += 1  # Increment response counter
 
-                if not args.silent:
+                if not args.silent or args.information:
                     print("Current Batch: {}".format(math.ceil(response_counter/len(target_ids))))
+                    print("Current response number: {}".format(response_counter))
                     print("Current Calculation: {} % {} = {}".format(response_counter, len(target_ids), response_counter % len(target_ids)))
 
                 if response_counter % len(target_ids) == 0:
+                    batch_name = "Batch {}".format(math.ceil(response_counter / len(target_ids)))
+                    responses_dict[batch_name] = temp_responses_list
+                    temp_responses_list = []
                     ready_for_next.set()
             elif action_type == 'close':
                 print(message)
@@ -224,14 +250,14 @@ class MeshcallerActions:
     """Processes playbook actions."""
     
     @staticmethod
-    async def process_arguments(python_client: MeshcallerWebSocket, playbook_path: str):
+    async def process_arguments(python_client: MeshbookWebsocket, playbook_path: str):
         """Executes tasks defined in the playbook."""
         global response_counter, expected_responses, target_ids
 
         await basic_ready_state.wait()  # Wait for the basic data to be ready
 
-        playbook_yaml = MeshcallerUtilities.read_yaml(playbook_path)
-        target_ids = MeshcallerUtilities.get_target_ids(
+        playbook_yaml = MeshbookUtilities.read_yaml(playbook_path)
+        target_ids = MeshbookUtilities.get_target_ids(
             company=playbook_yaml.get('company'),
             device=playbook_yaml.get('device')
         )
@@ -248,16 +274,18 @@ class MeshcallerActions:
             'reply': True
         }
 
-        # Calculate the total expected responses: tasks x target nodes
-        expected_responses = len(playbook_yaml['tasks']) * len(target_ids)
+        expected_responses = len(playbook_yaml['tasks']) * len(target_ids) # Calculate the total expected responses: tasks x target nodes
 
         # Send commands for all nodes at once
         for task in playbook_yaml['tasks']:
             await ready_for_next.wait()
             run_command_template["cmds"] = task['command']
             run_command_template["nodeids"] = target_ids  # Send to all target IDs at once
-            print("Running task:", task)
-            print("-=-" * 40)
+            
+            if not args.silent or args.information:
+                print("-=-" * 40)
+                print("Running task:", task)
+                print("-=-" * 40)
 
             # Send the command to all nodes in one go
             await python_client.ws_send_data(json.dumps(run_command_template))
@@ -268,6 +296,10 @@ class MeshcallerActions:
             await asyncio.sleep(1)
 
         # Exit gracefully
+        print("-=-" * 40)
+        updated_response_dict = MeshbookUtilities.translate_nodeids(responses_dict, global_list)
+
+        print(json.dumps(updated_response_dict,indent=4))
         raise ScriptEndTrigger("All tasks completed successfully: Expected {} Received {}".format(expected_responses, response_counter))
 
 
@@ -276,14 +308,15 @@ async def main():
     parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./api.conf).")
     parser.add_argument("-pb", "--playbook", type=str, help="Path to the playbook file.", required=True)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output.")
+    parser.add_argument("-i", "--information", action="store_true", help="Output the calculations and other informational output.")
 
     global args
     args = parser.parse_args()
 
     try:
-        credentials = MeshcallerUtilities.load_config(args.conf)
-        python_client = MeshcallerWebSocket()
-        processor = MeshcallerProcessor()
+        credentials = MeshbookUtilities.load_config(args.conf)
+        python_client = MeshbookWebsocket()
+        processor = MeshbookProcessor()
 
         websocket_task = asyncio.create_task(python_client.ws_handler(
             credentials['websocket_url'],
