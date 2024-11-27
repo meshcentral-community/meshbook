@@ -2,4 +2,4 @@ asyncio
 argparse
 configparser
 pyyaml
-websockets
+websockets==13.1
