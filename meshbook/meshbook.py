@@ -299,13 +299,15 @@ class MeshcallerActions:
         print("-=-" * 40)
         updated_response_dict = MeshbookUtilities.translate_nodeids(responses_dict, global_list)
 
-        print(json.dumps(updated_response_dict,indent=4))
+        if not args.nojson:
+            print(json.dumps(updated_response_dict,indent=4))
         raise ScriptEndTrigger("All tasks completed successfully: Expected {} Received {}".format(expected_responses, response_counter))
 
 
 async def main():
     parser = argparse.ArgumentParser(description="Process command-line arguments")
     parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./api.conf).")
+    parser.add_argument("--nojson", action="store_true", help="Makes the program not output the JSON response data.")
     parser.add_argument("-pb", "--playbook", type=str, help="Path to the playbook file.", required=True)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output.")
     parser.add_argument("-i", "--information", action="store_true", help="Output the calculations and other informational output.")
@@ -328,7 +330,7 @@ async def main():
         await asyncio.gather(websocket_task, processor_task)
         
     except ScriptEndTrigger as e:
-        if not args.silent:
+        if not args.silent or args.information:
             print(e)
 
 
