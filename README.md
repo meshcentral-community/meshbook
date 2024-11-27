@@ -55,54 +55,55 @@ The following response it received when executing the first yaml of the above fi
 
 ```shell
 python3 meshbook.py -pb examples/ping.yaml -s
-Running task: {'name': 'Ping Cloudflare', 'command': 'ping 1.1.1.1 -c 4'}
--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
 {
-    "action": "msg",
-    "type": "runcommands",
-    "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=59 time=6.89 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=6.57 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=59 time=6.52 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=59 time=6.45 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 6.446/6.605/6.892/0.171 ms\n",
-    "responseid": "meshctrl",
-    "nodeid": "node//0fHMlKtmfVXhyHmJC09MWaIg0GZom$RVi9JffeTbbvKOx4AnTsfCJyQTiG4WYNIm"
-}
-{
-    "action": "msg",
-    "type": "runcommands",
-    "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=6.27 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=5.96 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=5.96 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=57 time=6.29 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 5.963/6.122/6.292/0.159 ms\n",
-    "responseid": "meshctrl",
-    "nodeid": "node//QFq2o35$cHss2ELZnH6SnY@0JNbK1zXatZiUQ@JBcZlQcy8xi62b7R6iMfmfMaFL"
-}
-{
-    "action": "msg",
-    "type": "runcommands",
-    "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=59 time=6.94 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=6.66 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=59 time=6.59 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=59 time=6.59 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 6.587/6.694/6.941/0.145 ms\n",
-    "responseid": "meshctrl",
-    "nodeid": "node//LJEX0zEOBTVZ@WDAArmURFRmXb3Puri0aQvb1GuYRPNA05S4u3EYrvBTKpQDn6jF"
-}
-Running task: {'name': 'Ping Google', 'command': 'ping 8.8.8.8 -c 4'}
--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
-{
-    "action": "msg",
-    "type": "runcommands",
-    "result": "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=5.61 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=118 time=5.22 ms\n64 bytes from 8.8.8.8: icmp_seq=3 ttl=118 time=5.23 ms\n64 bytes from 8.8.8.8: icmp_seq=4 ttl=118 time=5.33 ms\n\n--- 8.8.8.8 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 5.219/5.344/5.606/0.157 ms\n",
-    "responseid": "meshctrl",
-    "nodeid": "node//0fHMlKtmfVXhyHmJC09MWaIg0GZom$RVi9JffeTbbvKOx4AnTsfCJyQTiG4WYNIm"
-}
-{
-    "action": "msg",
-    "type": "runcommands",
-    "result": "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=5.63 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=118 time=5.35 ms\n64 bytes from 8.8.8.8: icmp_seq=3 ttl=118 time=5.55 ms\n64 bytes from 8.8.8.8: icmp_seq=4 ttl=118 time=5.42 ms\n\n--- 8.8.8.8 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 5.351/5.487/5.631/0.109 ms\n",
-    "responseid": "meshctrl",
-    "nodeid": "node//LJEX0zEOBTVZ@WDAArmURFRmXb3Puri0aQvb1GuYRPNA05S4u3EYrvBTKpQDn6jF"
-}
-{
-    "action": "msg",
-    "type": "runcommands",
-    "result": "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=4.86 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=118 time=4.76 ms\n64 bytes from 8.8.8.8: icmp_seq=3 ttl=118 time=4.74 ms\n64 bytes from 8.8.8.8: icmp_seq=4 ttl=118 time=4.71 ms\n\n--- 8.8.8.8 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3006ms\nrtt min/avg/max/mdev = 4.711/4.768/4.864/0.057 ms\n",
-    "responseid": "meshctrl",
-    "nodeid": "node//QFq2o35$cHss2ELZnH6SnY@0JNbK1zXatZiUQ@JBcZlQcy8xi62b7R6iMfmfMaFL"
+    "Batch 1": [
+        {
+            "action": "msg",
+            "type": "runcommands",
+            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=59 time=6.88 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=6.50 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=59 time=6.46 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=59 time=6.51 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 6.460/6.588/6.879/0.169 ms\n",
+            "responseid": "meshctrl",
+            "nodeid": "MSI"
+        },
+        {
+            "action": "msg",
+            "type": "runcommands",
+            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=6.22 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=6.07 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=5.97 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=57 time=5.90 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 5.904/6.038/6.216/0.117 ms\n",
+            "responseid": "meshctrl",
+            "nodeid": "server"
+        },
+        {
+            "action": "msg",
+            "type": "runcommands",
+            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=59 time=6.83 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=6.64 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=59 time=6.65 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=59 time=6.53 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 6.534/6.664/6.834/0.108 ms\n",
+            "responseid": "meshctrl",
+            "nodeid": "raspberrypi5"
+        }
+    ],
+    "Batch 2": [
+        {
+            "action": "msg",
+            "type": "runcommands",
+            "result": "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=5.69 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=118 time=5.22 ms\n64 bytes from 8.8.8.8: icmp_seq=3 ttl=118 time=5.19 ms\n64 bytes from 8.8.8.8: icmp_seq=4 ttl=118 time=5.16 ms\n\n--- 8.8.8.8 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 5.161/5.315/5.694/0.219 ms\n",
+            "responseid": "meshctrl",
+            "nodeid": "MSI"
+        },
+        {
+            "action": "msg",
+            "type": "runcommands",
+            "result": "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=5.65 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=118 time=5.28 ms\n64 bytes from 8.8.8.8: icmp_seq=3 ttl=118 time=5.25 ms\n64 bytes from 8.8.8.8: icmp_seq=4 ttl=118 time=5.25 ms\n\n--- 8.8.8.8 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 5.246/5.357/5.648/0.168 ms\n",
+            "responseid": "meshctrl",
+            "nodeid": "raspberrypi5"
+        },
+        {
+            "action": "msg",
+            "type": "runcommands",
+            "result": "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=4.94 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=118 time=4.68 ms\n64 bytes from 8.8.8.8: icmp_seq=3 ttl=118 time=4.79 ms\n64 bytes from 8.8.8.8: icmp_seq=4 ttl=118 time=4.77 ms\n\n--- 8.8.8.8 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 4.678/4.792/4.940/0.094 ms\n",
+            "responseid": "meshctrl",
+            "nodeid": "server"
+        }
+    ]
 }
 ```
-Please ignore the module output in the example, I will remove that in a later version.
 
 # Important Notice:
 
