@@ -210,6 +210,8 @@ class MeshcallerProcessor:
                 print(response_counter % len(target_ids))
                 if response_counter % len(target_ids) == 0:
                     ready_for_next.set()
+            elif action_type == 'close':
+                print(message)
             elif not args.silent:
                 print("Ignored action:", action_type)
 
