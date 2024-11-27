@@ -124,7 +124,7 @@ class MeshcallerWebSocket:
             print("Attempting WebSocket connection...")
 
         try:
-            async with websockets.connect(uri, extra_headers=ws_headers) as meshsocket:
+            async with websockets.connect(uri, additional_headers=ws_headers) as meshsocket:
                 self.meshsocket = meshsocket
                 await self.ws_on_open()
                 await self.gen_simple_list()
