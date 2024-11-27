@@ -16,8 +16,6 @@ To install, follow the following commands:<br>
 cd ./meshbook
 python3 -m venv ./venv
 source ./venv/bin/activate
-```
-```shell
 pip3 install -r requirements.txt
 ```
 Then you can use meshbook, for example:
