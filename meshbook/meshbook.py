@@ -5,6 +5,7 @@ import asyncio
 from base64 import b64encode
 from configparser import ConfigParser
 import json
+import math
 import os
 import yaml
 import websockets
@@ -207,7 +208,10 @@ class MeshcallerProcessor:
                 print(json.dumps(message, indent=4))
                 response_counter += 1  # Increment response counter
 
-                print(response_counter % len(target_ids))
+                if not args.silent:
+                    print("Current Batch: {}".format(math.ceil(response_counter/len(target_ids))))
+                    print("Current Calculation: {} % {} = {}".format(response_counter, len(target_ids), response_counter % len(target_ids)))
+
                 if response_counter % len(target_ids) == 0:
                     ready_for_next.set()
             elif action_type == 'close':
@@ -266,7 +270,7 @@ class MeshcallerActions:
             await asyncio.sleep(1)
 
         # Exit gracefully
-        raise ScriptEndTrigger("All tasks completed successfully.")
+        raise ScriptEndTrigger("All tasks completed successfully: Expected {} Received {}".format(expected_responses, response_counter))
 
 
 async def main():
