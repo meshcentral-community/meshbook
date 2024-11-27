@@ -9,7 +9,23 @@ And many people will be comfortable with YAML configurations! It's almost like J
 The quickest way to start is to grab a template from the templates folder in this repository.<br>
 Make sure to correctly pass the MeshCentral websocket API as `wss://<MeshCentral-Host>/control.ashx`.<br>
 And make sure to fill in the credentails of an account which has remote commands permissions.<br>
-Then make a yaml with a target and some commands! See below examples as a guideline. And do not forget to look at the bottom's notice.
+Then make a yaml with a target and some commands! See below examples as a guideline. And do not forget to look at the bottom's notice.<br>
+To install, follow the following commands:<br>
+
+```shell
+python3 -m venv ./venv
+``` 
+```shell
+source ./venv/bin/activate
+cd ./meshbook
+```
+```shell
+pip3 install -r requirements.txt
+```
+Then you can use meshbook, for example:
+```shell
+python3 meshbook.py -pb examples/ping.yaml
+```
 
 # Example:
 

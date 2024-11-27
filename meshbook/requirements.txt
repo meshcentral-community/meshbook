@@ -1,6 +1,5 @@
 asyncio
 argparse
 configparser
-json
 pyyaml
 websockets

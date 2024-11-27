@@ -116,7 +116,10 @@ class MeshcallerWebSocket:
     async def ws_handler(self, uri: str, username: str, password: str):
         """Main WebSocket connection handler."""
         login_string = f'{MeshcallerUtilities.base64_encode(username)},{MeshcallerUtilities.base64_encode(password)}'
-        ws_headers = {'User-Agent': 'MeshCentral API client', 'x-meshauth': login_string}
+        ws_headers = {
+            'User-Agent': 'MeshCentral API client',
+            'x-meshauth': login_string
+        }
         if not args.silent:
             print("Attempting WebSocket connection...")
 
@@ -286,6 +289,7 @@ async def main():
         processor_task = asyncio.create_task(processor.receive_processor(python_client))
         await MeshcallerActions.process_arguments(python_client, args.playbook)
         await asyncio.gather(websocket_task, processor_task)
+        
     except ScriptEndTrigger as e:
         if not args.silent:
             print(e)
