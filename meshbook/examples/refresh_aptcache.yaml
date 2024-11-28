@@ -1,7 +1,6 @@
 ---
 name: Refresh the apt cache
 company: Temp-Agents
-#device: MSI
 tasks:
   - name: refresh the cache
     command: "apt update"
