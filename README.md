@@ -1,3 +1,6 @@
+> [!NOTE]
+> *If you experience issues or have suggestions, submit an issue! https://github.com/DaanSelen/meshbook/issues I'll respond ASAP!*
+
 # Meshbook
 
 A way to programmatically manage MeshCentral-managed machines, a bit like Ansible does.<br>
