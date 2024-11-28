@@ -19,7 +19,8 @@ python3 -m venv ./venv
 source ./venv/bin/activate
 pip3 install -r ./meshbook/requirements.txt
 ```
-Then you can use meshbook, for example:
+Now copy the configuration template from ./templates and fill it in with the correct details. The url should start with `wss://` and end in `control.ashx`.<br>
+After this you can use meshbook, for example:
 ```shell
 python3 ./meshbook/meshbook.py -pb examples/echo.yaml
 ```
