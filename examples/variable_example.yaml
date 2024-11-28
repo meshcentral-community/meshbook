@@ -11,8 +11,8 @@ variables:
   - name: cmd_arguments
     value: "-c 4"
 tasks:
-  - name: Ping Cloudflare
+  - name: Ping host1
     command: "{{ command1 }} {{ host1 }} {{ cmd_arguments }}"
 
-  - name: Ping Google
+  - name: Ping host2
     command: "{{ command1 }} {{ host2 }} {{ cmd_arguments }}"
