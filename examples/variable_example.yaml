@@ -1,0 +1,18 @@
+---
+name: Ping Multiple Points
+company: Temp-Agents
+variables:
+  - name: host1
+    value: "1.1.1.1"
+  - name: host2
+    value: "ns.systemec.nl"
+  - name: command1
+    value: "ping"
+  - name: cmd_arguments
+    value: "-c 4"
+tasks:
+  - name: Ping Cloudflare
+    command: "{{ command1 }} {{ host1 }} {{ cmd_arguments }}"
+
+  - name: Ping Google
+    command: "{{ command1 }} {{ host2 }} {{ cmd_arguments }}"

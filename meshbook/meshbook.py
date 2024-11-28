@@ -72,6 +72,20 @@ class MeshbookUtilities:
         """Read a YAML file and return its content as a dictionary."""
         with open(file_path, 'r') as file:
             return yaml.safe_load(file)
+        
+    @staticmethod
+    def replace_placeholders(playbook) -> dict:
+        # Convert 'variables' to a dictionary for quick lookup
+        variables = {var["name"]: var["value"] for var in playbook.get("variables", [])}
+
+        # Traverse 'tasks' to replace placeholders
+        for task in playbook.get("tasks", []):
+            command = task.get("command", "")
+            for var_name, var_value in variables.items():
+                placeholder = f"{{{{ {var_name} }}}}"  # Create the placeholder string like "{{ host1 }}"
+                command = command.replace(placeholder, var_value)  # Update the command string
+            task["command"] = command  # Save the updated command string
+        return playbook
 
     @staticmethod
     def translate_nodeids(batches_dict, global_list) -> dict:
@@ -220,6 +234,7 @@ class MeshbookProcessor:
         """Processes messages received from the WebSocket."""
         global response_counter
         temp_responses_list = []
+        
         while True:
             message = await python_client.received_response_queue.get()
             action_type = message.get('action')
@@ -250,13 +265,12 @@ class MeshcallerActions:
     """Processes playbook actions."""
     
     @staticmethod
-    async def process_arguments(python_client: MeshbookWebsocket, playbook_path: str):
+    async def process_arguments(python_client: MeshbookWebsocket, playbook_yaml: dict):
         """Executes tasks defined in the playbook."""
         global response_counter, expected_responses, target_ids
 
         await basic_ready_state.wait()  # Wait for the basic data to be ready
 
-        playbook_yaml = MeshbookUtilities.read_yaml(playbook_path)
         target_ids = MeshbookUtilities.get_target_ids(
             company=playbook_yaml.get('company'),
             device=playbook_yaml.get('device')
@@ -308,9 +322,10 @@ class MeshcallerActions:
 
 async def main():
     parser = argparse.ArgumentParser(description="Process command-line arguments")
+    parser.add_argument("-pb", "--playbook", type=str, help="Path to the playbook file.", required=True)
+
     parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./api.conf).")
     parser.add_argument("--nojson", action="store_true", help="Makes the program not output the JSON response data.")
-    parser.add_argument("-pb", "--playbook", type=str, help="Path to the playbook file.", required=True)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output.")
     parser.add_argument("-i", "--information", action="store_true", help="Add the calculations and other informational data to the output.")
 
@@ -328,7 +343,11 @@ async def main():
             credentials['password']
         ))
         processor_task = asyncio.create_task(processor.receive_processor(python_client))
-        await MeshcallerActions.process_arguments(python_client, args.playbook)
+
+        playbook_yaml = MeshbookUtilities.read_yaml(args.playbook)
+        translated_playbook = MeshbookUtilities.replace_placeholders(playbook_yaml)
+        await MeshcallerActions.process_arguments(python_client, translated_playbook)
+
         await asyncio.gather(websocket_task, processor_task)
         
     except ScriptEndTrigger as e:

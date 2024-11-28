@@ -1,9 +1,0 @@
----
-name: Refresh the apt cache
-company: Temp-Agents
-tasks:
-  - name: refresh the cache
-    command: "apt update"
-
-  - name: display available upgrades
-    command: "apt list --upgradable"
