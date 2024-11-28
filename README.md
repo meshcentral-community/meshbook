@@ -40,7 +40,7 @@ variables:
   - name: host1
     value: "1.1.1.1"
   - name: host2
-    value: "ns.systemec.nl"
+    value: "9.9.9.9"
   - name: command1
     value: "ping"
   - name: cmd_arguments
@@ -70,7 +70,7 @@ Current Batch: 1
 Current response number: 3
 Current Calculation: 3 % 3 = 0
 -=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
-Running task: {'name': 'Ping host2', 'command': 'ping ns.systemec.nl -c 4'}
+Running task: {'name': 'Ping host2', 'command': 'ping 9.9.9.9 -c 4'}
 -=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
 Current Batch: 2
 Current response number: 4
@@ -87,46 +87,46 @@ Current Calculation: 6 % 3 = 0
         {
             "action": "msg",
             "type": "runcommands",
-            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=59 time=6.70 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=6.51 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=59 time=6.51 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=59 time=6.52 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 6.508/6.558/6.697/0.080 ms\n",
+            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=59 time=6.73 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=6.37 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=59 time=6.31 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=59 time=6.44 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 6.312/6.461/6.727/0.159 ms\n",
             "responseid": "meshctrl",
             "nodeid": "MSI"
         },
         {
             "action": "msg",
             "type": "runcommands",
-            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=6.15 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=6.43 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=5.94 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=57 time=5.87 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 5.870/6.098/6.430/0.217 ms\n",
+            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=6.18 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=6.17 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=6.17 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=57 time=6.27 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 6.170/6.200/6.274/0.042 ms\n",
             "responseid": "meshctrl",
-            "nodeid": "server"
+            "nodeid": "raspberrypi5"
         },
         {
             "action": "msg",
             "type": "runcommands",
-            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=6.29 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=6.05 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=5.88 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=57 time=5.99 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 5.875/6.050/6.286/0.150 ms\n",
+            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=6.33 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=6.13 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=5.92 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=57 time=5.91 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 5.908/6.072/6.334/0.173 ms\n",
             "responseid": "meshctrl",
-            "nodeid": "raspberrypi5"
+            "nodeid": "server"
         }
     ],
     "Batch 2": [
         {
             "action": "msg",
             "type": "runcommands",
-            "result": "PING ns.systemec.nl (89.20.90.102) 56(84) bytes of data.\n64 bytes from roma.systemec.nl (89.20.90.102): icmp_seq=1 ttl=60 time=1.45 ms\n64 bytes from roma.systemec.nl (89.20.90.102): icmp_seq=2 ttl=60 time=1.10 ms\n64 bytes from roma.systemec.nl (89.20.90.102): icmp_seq=3 ttl=60 time=1.12 ms\n64 bytes from roma.systemec.nl (89.20.90.102): icmp_seq=4 ttl=60 time=1.14 ms\n\n--- ns.systemec.nl ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3003ms\nrtt min/avg/max/mdev = 1.100/1.199/1.448/0.143 ms\n",
+            "result": "PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.\n64 bytes from 9.9.9.9: icmp_seq=1 ttl=61 time=10.4 ms\n64 bytes from 9.9.9.9: icmp_seq=2 ttl=61 time=9.96 ms\n64 bytes from 9.9.9.9: icmp_seq=3 ttl=61 time=9.83 ms\n64 bytes from 9.9.9.9: icmp_seq=4 ttl=61 time=9.96 ms\n\n--- 9.9.9.9 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 9.830/10.036/10.396/0.214 ms\n",
+            "responseid": "meshctrl",
+            "nodeid": "MSI"
+        },
+        {
+            "action": "msg",
+            "type": "runcommands",
+            "result": "PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.\n64 bytes from 9.9.9.9: icmp_seq=1 ttl=60 time=10.8 ms\n64 bytes from 9.9.9.9: icmp_seq=2 ttl=60 time=10.6 ms\n64 bytes from 9.9.9.9: icmp_seq=3 ttl=60 time=10.5 ms\n64 bytes from 9.9.9.9: icmp_seq=4 ttl=60 time=10.5 ms\n\n--- 9.9.9.9 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 10.450/10.593/10.773/0.118 ms\n",
             "responseid": "meshctrl",
             "nodeid": "raspberrypi5"
         },
         {
             "action": "msg",
             "type": "runcommands",
-            "result": "PING ns.systemec.nl (89.20.90.102) 56(84) bytes of data.\n64 bytes from ns.systemec.nl (89.20.90.102): icmp_seq=1 ttl=59 time=1.52 ms\n64 bytes from ns.systemec.nl (89.20.90.102): icmp_seq=2 ttl=59 time=1.26 ms\n64 bytes from ns.systemec.nl (89.20.90.102): icmp_seq=3 ttl=59 time=1.34 ms\n64 bytes from ns.systemec.nl (89.20.90.102): icmp_seq=4 ttl=59 time=1.27 ms\n\n--- ns.systemec.nl ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3006ms\nrtt min/avg/max/mdev = 1.255/1.345/1.523/0.107 ms\n",
+            "result": "PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.\n64 bytes from 9.9.9.9: icmp_seq=1 ttl=59 time=10.8 ms\n64 bytes from 9.9.9.9: icmp_seq=2 ttl=59 time=10.6 ms\n64 bytes from 9.9.9.9: icmp_seq=3 ttl=59 time=10.9 ms\n64 bytes from 9.9.9.9: icmp_seq=4 ttl=59 time=10.7 ms\n\n--- 9.9.9.9 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3006ms\nrtt min/avg/max/mdev = 10.600/10.750/10.898/0.117 ms\n",
             "responseid": "meshctrl",
             "nodeid": "server"
-        },
-        {
-            "action": "msg",
-            "type": "runcommands",
-            "result": "PING ns.systemec.nl (89.20.90.102) 56(84) bytes of data.\n64 bytes from ns.systemec.nl (89.20.90.102): icmp_seq=1 ttl=62 time=7.21 ms\n64 bytes from roma.systemec.nl (89.20.90.102): icmp_seq=2 ttl=62 time=0.346 ms\n64 bytes from ns.systemec.nl (89.20.90.102): icmp_seq=3 ttl=62 time=0.358 ms\n64 bytes from roma.systemec.nl (89.20.90.102): icmp_seq=4 ttl=62 time=0.336 ms\n\n--- ns.systemec.nl ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3018ms\nrtt min/avg/max/mdev = 0.336/2.061/7.205/2.969 ms\n",
-            "responseid": "meshctrl",
-            "nodeid": "MSI"
         }
     ]
 }

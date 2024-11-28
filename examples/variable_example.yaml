@@ -5,7 +5,7 @@ variables:
   - name: host1
     value: "1.1.1.1"
   - name: host2
-    value: "ns.systemec.nl"
+    value: "9.9.9.9"
   - name: command1
     value: "ping"
   - name: cmd_arguments
