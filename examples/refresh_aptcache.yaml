@@ -1,0 +1,12 @@
+---
+name: Refresh the apt cache
+company: Temp-Agents
+variables:
+  - name: package_manager
+    value: "apt"
+tasks:
+  - name: refresh the cache
+    command: "{{ package_manager }} update"
+
+  - name: display available upgrades
+    command: "{{ package_manager }} list --upgradable"
