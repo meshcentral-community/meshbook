@@ -1,6 +1,6 @@
 ---
 name: Ping Multiple Points
-company: Temp-Agents
+company: "Temp-Agents"
 variables:
   - name: host1
     value: "1.1.1.1"

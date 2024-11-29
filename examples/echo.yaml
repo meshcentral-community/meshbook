@@ -1,6 +1,6 @@
 ---
-name: "Echo some text in the terminal of the device"
-device: raspberrypi5
+name: Echo some text in the terminal of the device
+device: "raspberrypi5"
 variables:
   - name: var1
     value: "Testing"
