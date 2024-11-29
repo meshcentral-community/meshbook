@@ -1,3 +1,6 @@
+> [!NOTE]
+> *If you experience issues or have suggestions, submit an issue! https://github.com/DaanSelen/meshbook/issues I'll respond ASAP!*
+
 # Meshbook
 
 A way to programmatically manage MeshCentral-managed machines, a bit like Ansible does.<br>
@@ -52,7 +55,7 @@ python3 .\meshbook\meshbook.py -pb .\examples\echo.yaml
 
 ### How to check if everything is okay?
 
-The python virtual environment can get messed up, therefor...<br>
+The python virtual environment can get messed up, therefore...<br>
 To check if everything is in working order, make sure that the lists from the following commands are aligned:
 
 ```
