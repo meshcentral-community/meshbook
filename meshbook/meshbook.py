@@ -49,23 +49,7 @@ class MeshbookUtilities:
 
         return ids
 
-    @staticmethod
-    def load_config(conffile: str = None, segment: str = 'meshcentral-service') -> ConfigParser:
-        """Load and return the configuration from a file."""
-        conffile = conffile or './api.conf'
-        if not os.path.exists(conffile):
-            raise ScriptEndTrigger(f'Missing config file {conffile}. Provide an alternative path.')
 
-        try:
-            my_config = ConfigParser()
-            my_config.read(conffile)
-        except Exception as err:
-            raise ScriptEndTrigger(f'Error reading config file {conffile}: {err}')
-        
-        if segment not in my_config:
-            raise ScriptEndTrigger(f'Segment "{segment}" not found in config file {conffile}.')
-
-        return my_config[segment]
 
     @staticmethod
     def read_yaml(file_path: str) -> dict:
