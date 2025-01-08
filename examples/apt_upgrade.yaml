@@ -1,6 +1,6 @@
 ---
 name: Refresh the apt cache
-company: "Temp-Agents"
+group: "Dev"
 variables:
   - name: package_manager
     value: "apt"
