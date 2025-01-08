@@ -1,6 +1,6 @@
 ---
 name: Ping Multiple Points
-group: "Temp-Agents"
+group: "Kubernetes"
 variables:
   - name: host1
     value: "1.1.1.1"

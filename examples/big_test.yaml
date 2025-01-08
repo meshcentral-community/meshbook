@@ -1,0 +1,31 @@
+---
+name: Echo some text in the terminal of the device
+group: "Kubernetes"
+variables:
+  - name: package_manager
+    value: "apt"
+  - name: google_dns
+    value: "8.8.8.8"
+  - name: "quad9_dns"
+    value: "9.9.9.9"
+tasks:
+  - name: refresh the cache
+    command: "{{ package_manager }} update"
+
+  - name: display available upgrades
+    command: "{{ package_manager }} list --upgradable"
+
+  - name: apply upgrades
+    command: "{{ package_manager }} upgrade -y"
+
+  - name: cleanup remaining packages
+    command: "{{ package_manager }} autoremove -y"
+
+  - name: run autoclean
+    command: "{{ package_manager }} autoclean -y"
+
+  - name: Ping Google DNS
+    command: "ping {{ google_dns }} -c 4"
+ 
+  - name: Ping Quad9 DNS
+    command: "ping {{ quad9_dns }} -c 4"
