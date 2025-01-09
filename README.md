@@ -10,7 +10,7 @@ And many people will be comfortable with YAML configurations! It's almost like J
 # Quick-start:
 
 The quickest way to start is to grab a template from the templates folder in this repository.<br>
-Make sure to correctly pass the MeshCentral websocket API as `wss://<MeshCentral-Host>/control.ashx`.<br>
+Make sure to correctly pass the MeshCentral websocket API as `wss://<MeshCentral-Host>`.<br>
 And make sure to fill in the credentails of an account which has `Remote Commands` permissions and `Device Details` permissions on the targeted devices or groups.<br>
 
 > I did this through a "Global Service" group which I added the meshbook account to!
@@ -38,7 +38,7 @@ python3 -m venv ./venv
 pip3 install -r ./meshbook/requirements.txt
 ```
 
-Now copy the configuration template from ./templates and fill it in with the correct details. The url should start with `wss://` and end in `control.ashx`.<br>
+Now copy the configuration template from ./templates and fill it in with the correct details. The url should start with `wss://`.<br>
 After this you can use meshbook, for example:
 
 ### Linux run:
@@ -106,110 +106,54 @@ The command field actually gets executed on the end-point.<br>
 
 For the example, I used the following yaml file (you can find more in [this directory](./examples/)):
 
-The below group: `Temp-Agents` has four devices, of which one is offline.<br>
+The below group: `Dev` has three devices, of which one is offline, Meshbook checks if the device is reachable.<br>
 You can expand the command chain as follows:<br>
 
 ```yaml
 ---
-name: Ping Multiple Points
-company: Temp-Agents
+name: Echo a string to the terminal through the meshbook example.
+group: "Dev"
 variables:
-  - name: host1
-    value: "1.1.1.1"
-  - name: host2
-    value: "9.9.9.9"
-  - name: command1
-    value: "ping"
-  - name: cmd_arguments
-    value: "-c 4"
+  - name: file
+    value: "/etc/os-release"
 tasks:
-  - name: Ping host1
-    command: "{{ command1 }} {{ host1 }} {{ cmd_arguments }}"
-
-  - name: Ping host2
-    command: "{{ command1 }} {{ host2 }} {{ cmd_arguments }}"
+  - name: Echo!
+    command: "echo $(cat {{ file }})"
 ```
 
 The following response it received when executing the first yaml of the above files (with the `-s` and the `-i` parameters).
 
 ```shell
-python3 meshbook/meshbook.py -pb examples/variable_example.yaml -si
--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
-Running task: {'name': 'Ping host1', 'command': 'ping 1.1.1.1 -c 4'}
--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
-Current Batch: 1
-Current response number: 1
-Current Calculation: 1 % 3 = 1
-Current Batch: 1
-Current response number: 2
-Current Calculation: 2 % 3 = 2
-Current Batch: 1
-Current response number: 3
-Current Calculation: 3 % 3 = 0
--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
-Running task: {'name': 'Ping host2', 'command': 'ping 9.9.9.9 -c 4'}
--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
-Current Batch: 2
-Current response number: 4
-Current Calculation: 4 % 3 = 1
-Current Batch: 2
-Current response number: 5
-Current Calculation: 5 % 3 = 2
-Current Batch: 2
-Current response number: 6
-Current Calculation: 6 % 3 = 0
--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
+python3 meshbook.py -pb examples/echo_example.yaml
+----------------------------------------
+Trying to load the MeshCentral account credential file...
+Trying to load the Playbook yaml file and compile it into something workable...
+Connecting to MeshCentral and establish a session using variables from previous credential file.
+Generating group list with nodes and reference the targets from that.
+----------------------------------------
+Executing playbook on the targets.
+1. Running: Echo!
+----------------------------------------
 {
-    "Batch 1": [
+    "Task 1": [
         {
-            "action": "msg",
-            "type": "runcommands",
-            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=59 time=6.73 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=59 time=6.37 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=59 time=6.31 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=59 time=6.44 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 6.312/6.461/6.727/0.159 ms\n",
-            "responseid": "meshctrl",
-            "nodeid": "MSI"
+            "complete": true,
+            "result": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\" NAME=\"Debian GNU/Linux\" VERSION_ID=\"12\" VERSION=\"12 (bookworm)\" VERSION_CODENAME=bookworm ID=debian HOME_URL=\"https://www.debian.org/\" SUPPORT_URL=\"https://www.debian.org/support\" BUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+            "command": "echo $(cat /etc/os-release)",
+            "device_id": "<Node-Unique>",
+            "device_name": "raspberrypi5"
         },
         {
-            "action": "msg",
-            "type": "runcommands",
-            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=6.18 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=6.17 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=6.17 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=57 time=6.27 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 6.170/6.200/6.274/0.042 ms\n",
-            "responseid": "meshctrl",
-            "nodeid": "raspberrypi5"
-        },
-        {
-            "action": "msg",
-            "type": "runcommands",
-            "result": "PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.\n64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=6.33 ms\n64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=6.13 ms\n64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=5.92 ms\n64 bytes from 1.1.1.1: icmp_seq=4 ttl=57 time=5.91 ms\n\n--- 1.1.1.1 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 5.908/6.072/6.334/0.173 ms\n",
-            "responseid": "meshctrl",
-            "nodeid": "server"
-        }
-    ],
-    "Batch 2": [
-        {
-            "action": "msg",
-            "type": "runcommands",
-            "result": "PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.\n64 bytes from 9.9.9.9: icmp_seq=1 ttl=61 time=10.4 ms\n64 bytes from 9.9.9.9: icmp_seq=2 ttl=61 time=9.96 ms\n64 bytes from 9.9.9.9: icmp_seq=3 ttl=61 time=9.83 ms\n64 bytes from 9.9.9.9: icmp_seq=4 ttl=61 time=9.96 ms\n\n--- 9.9.9.9 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 9.830/10.036/10.396/0.214 ms\n",
-            "responseid": "meshctrl",
-            "nodeid": "MSI"
-        },
-        {
-            "action": "msg",
-            "type": "runcommands",
-            "result": "PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.\n64 bytes from 9.9.9.9: icmp_seq=1 ttl=60 time=10.8 ms\n64 bytes from 9.9.9.9: icmp_seq=2 ttl=60 time=10.6 ms\n64 bytes from 9.9.9.9: icmp_seq=3 ttl=60 time=10.5 ms\n64 bytes from 9.9.9.9: icmp_seq=4 ttl=60 time=10.5 ms\n\n--- 9.9.9.9 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 10.450/10.593/10.773/0.118 ms\n",
-            "responseid": "meshctrl",
-            "nodeid": "raspberrypi5"
-        },
-        {
-            "action": "msg",
-            "type": "runcommands",
-            "result": "PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.\n64 bytes from 9.9.9.9: icmp_seq=1 ttl=59 time=10.8 ms\n64 bytes from 9.9.9.9: icmp_seq=2 ttl=59 time=10.6 ms\n64 bytes from 9.9.9.9: icmp_seq=3 ttl=59 time=10.9 ms\n64 bytes from 9.9.9.9: icmp_seq=4 ttl=59 time=10.7 ms\n\n--- 9.9.9.9 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3006ms\nrtt min/avg/max/mdev = 10.600/10.750/10.898/0.117 ms\n",
-            "responseid": "meshctrl",
-            "nodeid": "server"
+            "complete": true,
+            "result": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\" NAME=\"Debian GNU/Linux\" VERSION_ID=\"12\" VERSION=\"12 (bookworm)\" VERSION_CODENAME=bookworm ID=debian HOME_URL=\"https://www.debian.org/\" SUPPORT_URL=\"https://www.debian.org/support\" BUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+            "command": "echo $(cat /etc/os-release)",
+            "device_id": "<Node-Unique>",
+            "device_name": "Cubic"
         }
     ]
 }
-All tasks completed successfully: Expected 6 Received 6
 ```
-The above with `-si` is quite verbose. use `--help` to read about parameters.
+The above without `-s` is quite verbose. use `--help` to read about parameters and getting a minimal response for example.
 
 # Important Notice:
 
