@@ -1,6 +1,6 @@
 ---
 name: Refresh the apt cache
-group: "Temp-Agents"
+device: Cubic
 variables:
   - name: package_manager
     value: "apt"

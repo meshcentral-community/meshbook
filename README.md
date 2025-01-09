@@ -3,15 +3,15 @@
 
 # Meshbook
 
-A way to programmatically manage MeshCentral-managed machines, a bit like Ansible does.<br>
-What problem does it solve? Well, what I wanted to be able to do is to automate system updates through [MeshCentral](https://github.com/ylianst/meshcentral).<br>
+A way to programmatically manage MeshCentral-managed machines, inspired by applications like [Ansible](https://github.com/ansible/ansible).<br>
+What problem does it solve? Well, what I wanted to be able to do is to automate system updates through [MeshCentral](https://github.com/ylianst/meshcentral). And some machines are behind unmanaged or 3rd party managed firewalls.<br>
 And many people will be comfortable with YAML configurations! It's almost like JSON, but different!<br>
 
 # Quick-start:
 
 The quickest way to start is to grab a template from the templates folder in this repository.<br>
 Make sure to correctly pass the MeshCentral websocket API as `wss://<MeshCentral-Host>`.<br>
-And make sure to fill in the credentails of an account which has `Remote Commands` permissions and `Device Details` permissions on the targeted devices or groups.<br>
+And make sure to fill in the credentails of an account which has `Remote Commands` permissions on the targeted devices or groups.<br>
 
 > I did this through a "Global Service" group which I added the meshbook account to!
 
@@ -25,7 +25,7 @@ git clone https://github.com/daanselen/meshbook
 cd ./meshbook
 python3 -m venv ./venv
 source ./venv/bin/activate
-pip3 install -r ./meshbook/requirements.txt
+pip3 install -r ./requirements.txt
 ```
 
 ### Windows setup:
@@ -35,7 +35,7 @@ git clone https://github.com/daanselen/meshbook
 cd ./meshbook
 python3 -m venv ./venv
 .\venv\Scripts\activate # Make sure to check the terminal prefix.
-pip3 install -r ./meshbook/requirements.txt
+pip3 install -r ./requirements.txt
 ```
 
 Now copy the configuration template from ./templates and fill it in with the correct details. The url should start with `wss://`.<br>
@@ -44,13 +44,13 @@ After this you can use meshbook, for example:
 ### Linux run:
 
 ```shell
-python3 .\meshbook\meshbook.py -pb .\examples\echo.yaml
+python3 .\meshbook.py -pb .\examples\echo.yaml
 ```
 
 ### Windows run:
 
 ```shell
-.\venv\Scripts\python.exe .\meshbook\meshbook.py -pb .\examples\echo.yaml
+.\venv\Scripts\python.exe .\meshbook.py -pb .\examples\echo.yaml
 ```
 
 ### How to check if everything is okay?
@@ -71,7 +71,7 @@ This paragraph explains how the program interprets certain information.
 
 ### Targeting:
 
-MeshCentral has `meshes` or `groups`, in this program they are called `companies`. Because of the way I designed this.<br>
+MeshCentral has `meshes` or `groups`, in this program they are called `group(s)`. Because of the way I designed this.<br>
 So to target for example a mesh/group in MeshCentral called: "Nerthus" do:
 
 > If your group has multiple words, then you need to use `"` to group the words.
@@ -79,7 +79,7 @@ So to target for example a mesh/group in MeshCentral called: "Nerthus" do:
 ```yaml
 ---
 name: example configuration
-company: "Nerthus"
+group: "Nerthus"
 variables:
   - name: var1
     value: "This is the first variable"
@@ -88,13 +88,13 @@ tasks:
     command: 'echo "{{ var1 }}"'
 ```
 
-It is also possible to target a single device, as seen in: [here](./examples/echo.yaml).<br>
+It is also possible to target a single device, as seen in: [here](./examples/apt_update_example.yaml).<br>
 
 ### Variables:
 
-Variables are done by replacing the placeholders just before the runtime.<br>
+Variables are done by replacing the placeholders just before the runtime (the Python program does this, not you).<br>
 So if you have var1 declared, then the value of that declaration is placed wherever it finds {{ var1 }}.<br>
-This is done to imitate popular methods. See below [from the example](./examples/variable_example.yaml).<br>
+This is done to imitate popular methods. See below [from the example](./examples/variable_usage_example.yaml).<br>
 
 ### Tasks:
 
@@ -121,7 +121,7 @@ tasks:
     command: "echo $(cat {{ file }})"
 ```
 
-The following response it received when executing the first yaml of the above files (with the `-s` and the `-i` parameters).
+The following response it received when executing the first yaml of the above files (without the `-s` parameters, which just outputs the below JSON).
 
 ```shell
 python3 meshbook.py -pb examples/echo_example.yaml
@@ -158,7 +158,7 @@ The above without `-s` is quite verbose. use `--help` to read about parameters a
 # Important Notice:
 
 If you want to use this, make sure to use `NON-BLOCKING` commands. MeshCentral does not work if you send it commands that wait.<br>
-A couple examples of `BLOCKING COMMANDS` which will never get back to the main MeshCentral server:
+A couple examples of `BLOCKING COMMANDS` which will never get back to the main MeshCentral server, and Meshbook will quit after the timeout but the agent will not come back:
 
 ```shell
 apt upgrade # without -y.
