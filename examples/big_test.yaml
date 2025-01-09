@@ -1,6 +1,6 @@
 ---
 name: Echo some text in the terminal of the device
-group: "Kubernetes"
+group: "Dev"
 variables:
   - name: package_manager
     value: "apt"
@@ -26,6 +26,6 @@ tasks:
 
   - name: Ping Google DNS
     command: "ping {{ google_dns }} -c 4"
- 
+
   - name: Ping Quad9 DNS
     command: "ping {{ quad9_dns }} -c 4"

@@ -132,7 +132,7 @@ async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: d
             response[device]["device_name"] = await translate_id_to_name(device)
             task_batch.append(response[device])
 
-        responses_list[task["name"]] = task_batch
+        responses_list["Task " + str(round)] = task_batch
         round += 1
     
     output_text(("-" * 40), False)
