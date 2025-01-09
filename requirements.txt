@@ -1,5 +1,4 @@
-argparse
-asyncio
-configparser
-pyyaml
-libmeshctrl
+asyncio==3.4.3
+configparser==7.1.0
+pyyaml==6.0.2
+libmeshctrl==1.1.0
