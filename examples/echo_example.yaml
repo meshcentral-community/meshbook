@@ -1,9 +1,0 @@
----
-name: Echo a string to the terminal through the meshbook example.
-group: "Dev"
-variables:
-  - name: file
-    value: "/etc/os-release"
-tasks:
-  - name: Echo!
-    command: "echo $(cat {{ file }})"
