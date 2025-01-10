@@ -142,7 +142,7 @@ async def main():
     parser = argparse.ArgumentParser(description="Process command-line arguments")
     parser.add_argument("-pb", "--playbook", type=str, help="Path to the playbook file.", required=True)
     parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./api.conf).", required=False)
-    parser.add_argument("--noout", action="store_true", help="Makes the program not output response data.", required=False)
+    parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the playbook.", required=False)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output", required=False)
 
     global args
@@ -166,11 +166,15 @@ async def main():
         group_list = await compile_group_list(session)
         targets_list = await gather_targets(playbook)
 
-        output_text(("-" * 40), False)
         if len(targets_list) == 0:
             output_text(("\033[91mNo targets found or targets unreachable, quitting.\x1B[0m"), True)
         else:
-            output_text(("\033[91mExecuting playbook on the targets.\x1B[0m"), False)
+            output_text(("-" * 40), False)
+            target_name = playbook["group"] if "group" in playbook else playbook["device"] # Quickly get the name.
+            output_text(("\033[91mExecuting playbook on the targets: " + target_name + ".\x1B[0m"), False)
+            if not args.nograce:
+                output_text(("\033[91mInitiating grace-period...\x1B[0m"), False)
+                await asyncio.sleep(3)
             await execute_playbook(session, targets_list, playbook)
 
         await session.close()
