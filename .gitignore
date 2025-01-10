@@ -3,7 +3,7 @@ venv
 .vscode
 
 # temporary or to prevent big commits
-examples
+examples/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
