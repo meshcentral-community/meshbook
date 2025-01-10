@@ -47,7 +47,7 @@ async def init_connection(credentials: dict) -> meshctrl.Session:
     await session.initialized.wait()
     return session
 
-async def translate_id_to_name(target_id: str) -> str:
+async def translate_id_to_name(target_id: str, group_list: dict) -> str:
     for group in group_list:
         for device in group_list[group]:
             if device["device_id"] == target_id:
@@ -79,7 +79,7 @@ Creation and compilation of the MeshCentral nodes list (list of all nodes availa
 
 async def compile_group_list(session: meshctrl.Session) -> dict:
     devices_response = await session.list_devices(details=False, timeout=10)
-    
+
     local_device_list = {}
     for device in devices_response:
         if device.meshname not in local_device_list:
@@ -92,10 +92,9 @@ async def compile_group_list(session: meshctrl.Session) -> dict:
             "device_tags": device.tags,
             "reachable": device.connected
         })
-
     return local_device_list
 
-async def gather_targets(playbook: dict) -> dict:
+async def gather_targets(playbook: dict, group_list: dict) -> dict:
     target_list = []
 
     if "device" in playbook and "group" not in playbook:
@@ -117,19 +116,19 @@ async def gather_targets(playbook: dict) -> dict:
 
     return target_list
 
-async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: dict):
+async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: dict, group_list: dict) -> None:
     responses_list = {}
     round = 1
     for task in playbook["tasks"]:
         output_text(("\033[1m\033[92m" + str(round) + ". Running: " + task["name"] + "\033[0m"), False)
-        response = await session.run_command(nodeids=targets, command=task["command"], timeout=300)
+        response = await session.run_command(nodeids=targets, command=task["command"], ignore_output=False, timeout=300)
         
         task_batch = []
         for device in response:
             device_result = response[device]["result"]
             response[device]["result"] = device_result.replace("Run commands completed.", "")
             response[device]["device_id"] = device
-            response[device]["device_name"] = await translate_id_to_name(device)
+            response[device]["device_name"] = await translate_id_to_name(device, group_list)
             task_batch.append(response[device])
 
         responses_list["Task " + str(round)] = task_batch
@@ -162,20 +161,19 @@ async def main():
         session = await init_connection(credentials)
     
         output_text(("\x1B[3mGenerating group list with nodes and reference the targets from that.\x1B[0m"), False)
-        global group_list
         group_list = await compile_group_list(session)
-        targets_list = await gather_targets(playbook)
+        targets_list = await gather_targets(playbook, group_list)
 
         if len(targets_list) == 0:
             output_text(("\033[91mNo targets found or targets unreachable, quitting.\x1B[0m"), True)
         else:
             output_text(("-" * 40), False)
             target_name = playbook["group"] if "group" in playbook else playbook["device"] # Quickly get the name.
-            output_text(("\033[91mExecuting playbook on the targets: " + target_name + ".\x1B[0m"), False)
+            output_text(("\033[91mExecuting playbook on the target(s): " + target_name + ".\x1B[0m"), False)
             if not args.nograce:
                 output_text(("\033[91mInitiating grace-period...\x1B[0m"), False)
                 await asyncio.sleep(3)
-            await execute_playbook(session, targets_list, playbook)
+            await execute_playbook(session, targets_list, playbook, group_list)
 
         await session.close()
 
