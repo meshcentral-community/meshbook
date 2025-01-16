@@ -121,7 +121,7 @@ async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: d
     round = 1
     for task in playbook["tasks"]:
         output_text(("\033[1m\033[92m" + str(round) + ". Running: " + task["name"] + "\033[0m"), False)
-        response = await session.run_command(nodeids=targets, command=task["command"], ignore_output=False, timeout=300)
+        response = await session.run_command(nodeids=targets, command=task["command"], ignore_output=False, timeout=900)
         
         task_batch = []
         for device in response:
