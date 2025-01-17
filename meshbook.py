@@ -131,7 +131,10 @@ async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: d
             response[device]["device_name"] = await translate_id_to_name(device, group_list)
             task_batch.append(response[device])
 
-        responses_list["Task " + str(round)] = task_batch
+        responses_list["Task " + str(round)] = {
+            "task_name": task["name"],
+            "data": task_batch
+        }
         round += 1
     
     output_text(("-" * 40), False)
@@ -172,7 +175,10 @@ async def main():
             output_text(("\033[91mExecuting playbook on the target(s): " + target_name + ".\x1B[0m"), False)
             if not args.nograce:
                 output_text(("\033[91mInitiating grace-period...\x1B[0m"), False)
-                await asyncio.sleep(3)
+                for x in range(3):
+                    output_text(("\033[91m{}...\x1B[0m".format(x+1)), False)
+                    await asyncio.sleep(1)
+            output_text(("-" * 40), False)
             await execute_playbook(session, targets_list, playbook, group_list)
 
         await session.close()
