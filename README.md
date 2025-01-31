@@ -102,6 +102,15 @@ The tasks you want to run should be contained under the `tasks:` with two fields
 The name field is for the user of meshbook, to clarify what the following command does in a summary.<br>
 The command field actually gets executed on the end-point.<br>
 
+### Granual Operating System control:
+
+I have made the program so it can have a basic filter with the Operating systems. If you have a mixed group, then you need to match the image below like this:
+
+<img src="./assets/meshcentral_os.png" alt="MeshCentral Operating System Version" width="600"/><br>
+<img src="./assets/meshbook_yaml_os.png" alt="MeshBook yaml example" width="600"/>
+
+This will filter the nodes/machines in the MeshCentral group to the ones matching this. Very basic and open for feedback. This must match the full string, not case sensitive.
+
 # Example:
 
 For the example, I used the following yaml file (you can find more in [this directory](./examples/)):

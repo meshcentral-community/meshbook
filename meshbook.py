@@ -103,7 +103,10 @@ async def gather_targets(playbook: dict, group_list: dict) -> dict:
         for group in group_list:
             for device in group_list[group]:
                 if device["reachable"] and pseudo_target == device["device_name"]:
-                    target_list.append(device["device_id"])
+                    if "target_os" in playbook and str(playbook["target_os"]).lower() == str(device["device_os"]).lower():
+                        target_list.append(device["device_id"])
+                    elif "target_os" not in playbook:
+                        target_list.append(device["device_id"])
 
     elif "group" in playbook and "device" not in playbook:
         pseudo_target = playbook["group"]
@@ -112,8 +115,12 @@ async def gather_targets(playbook: dict, group_list: dict) -> dict:
             if pseudo_target == group:
                 for device in group_list[group]:
                     if device["reachable"]:
-                        target_list.append(device["device_id"])
+                        if "target_os" in playbook and str(playbook["target_os"]).lower() == str(device["device_os"]).lower():
+                            target_list.append(device["device_id"])
+                        elif "target_os" not in playbook:
+                            target_list.append(device["device_id"])
 
+    print(target_list)
     return target_list
 
 async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: dict, group_list: dict) -> None:
