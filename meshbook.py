@@ -120,7 +120,6 @@ async def gather_targets(playbook: dict, group_list: dict) -> dict:
                         elif "target_os" not in playbook:
                             target_list.append(device["device_id"])
 
-    print(target_list)
     return target_list
 
 async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: dict, group_list: dict) -> None:
