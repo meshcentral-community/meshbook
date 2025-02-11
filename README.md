@@ -11,9 +11,9 @@ And many people will be comfortable with YAML configurations! It's almost like J
 
 The quickest way to start is to grab a template from the templates folder in this repository.<br>
 Make sure to correctly pass the MeshCentral websocket API as `wss://<MeshCentral-Host>`.<br>
-And make sure to fill in the credentails of an account which has `Remote Commands` permissions on the targeted devices or groups.<br>
+And make sure to fill in the credentails of an account which has `Remote Commands`, `Details` and `Agent Console` permissions on the targeted devices or groups.<br>
 
-> I did this through a "Global Service" group which I added the meshbook account to!
+> I did this through a "Service account" with rights on the device group.
 
 Then make a yaml with a target and some commands! See below examples as a guideline. And do not forget to look at the bottom's notice.<br>
 To install, follow the following commands:<br>
