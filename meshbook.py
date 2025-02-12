@@ -17,13 +17,14 @@ Script utilities are handled in the following section.
 class ScriptEndTrigger(Exception):
     pass
 
-def output_text(message: str, required=False):
+def console(message: str, required: bool=False):
     if required:
         print(message)
     elif not args.silent:
         print(message)
 
-async def load_config(conf_file: str = './api.conf', segment: str = 'meshcentral-account') -> ConfigParser:
+async def load_config(segment: str = 'meshcentral-account') -> ConfigParser:
+    conf_file = args.conf
     if not os.path.exists(conf_file):
         raise ScriptEndTrigger(f'Missing config file {conf_file}. Provide an alternative path.')
 
@@ -32,7 +33,7 @@ async def load_config(conf_file: str = './api.conf', segment: str = 'meshcentral
         config.read(conf_file)
     except Exception as err:
         raise ScriptEndTrigger(f"Error reading configuration file '{conf_file}': {err}")
-    
+
     if segment not in config:
         raise ScriptEndTrigger(f'Segment "{segment}" not found in config file {conf_file}.')
 
@@ -84,7 +85,7 @@ async def compile_group_list(session: meshctrl.Session) -> dict:
     for device in devices_response:
         if device.meshname not in local_device_list:
             local_device_list[device.meshname] = []
-    
+
         local_device_list[device.meshname].append({
             "device_id": device.nodeid,
             "device_name": device.name,
@@ -94,31 +95,44 @@ async def compile_group_list(session: meshctrl.Session) -> dict:
         })
     return local_device_list
 
-async def gather_targets(playbook: dict, group_list: dict) -> dict:
-    target_list = []
+async def filter_devices(devices: list[dict], os_categories: dict, target_os: str = None) -> list[str]:
+    """Filters devices based on reachability and optional OS criteria."""
+    valid_devices = []
 
-    if "device" in playbook and "group" not in playbook:
+    for device in devices:
+        if not device["reachable"]:
+            continue  # Skip unreachable devices
+
+        if target_os:
+            if target_os in os_categories:
+                if device["device_os"] not in os_categories[target_os]:
+                    continue  # Skip if the device's OS is not in the allowed OS category
+
+        valid_devices.append(device["device_id"])
+
+    return valid_devices
+
+async def gather_targets(playbook: dict, group_list: dict[str, list[dict]], os_categories: dict) -> list[str]:
+    """Finds target devices based on playbook criteria (device or group)."""
+
+    target_list = []
+    target_os = playbook.get("target_os")
+
+    if "device" in playbook:
         pseudo_target = playbook["device"]
 
         for group in group_list:
             for device in group_list[group]:
-                if device["reachable"] and pseudo_target == device["device_name"]:
-                    if "target_os" in playbook and str(playbook["target_os"]).lower() == str(device["device_os"]).lower():
-                        target_list.append(device["device_id"])
-                    elif "target_os" not in playbook:
-                        target_list.append(device["device_id"])
+                if device["device_name"] == pseudo_target:
+                    matched_devices = await filter_devices([device], os_categories, target_os)
+                    target_list.extend(matched_devices)
 
-    elif "group" in playbook and "device" not in playbook:
+    elif "group" in playbook:
         pseudo_target = playbook["group"]
 
-        for group in group_list:
-            if pseudo_target == group:
-                for device in group_list[group]:
-                    if device["reachable"]:
-                        if "target_os" in playbook and str(playbook["target_os"]).lower() == str(device["device_os"]).lower():
-                            target_list.append(device["device_id"])
-                        elif "target_os" not in playbook:
-                            target_list.append(device["device_id"])
+        if pseudo_target in group_list:
+            matched_devices = await filter_devices(group_list[pseudo_target], os_categories, target_os)
+            target_list.extend(matched_devices)
 
     return target_list
 
@@ -126,9 +140,9 @@ async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: d
     responses_list = {}
     round = 1
     for task in playbook["tasks"]:
-        output_text(("\033[1m\033[92m" + str(round) + ". Running: " + task["name"] + "\033[0m"), False)
-        response = await session.run_command(nodeids=targets, command=task["command"], ignore_output=False, timeout=900)
-        
+        console(("\033[1m\033[92m" + str(round) + ". Running: " + task["name"] + "\033[0m"))
+        response = await session.run_command(nodeids=targets, command=task["command"],ignore_output=False,timeout=900)
+
         task_batch = []
         for device in response:
             device_result = response[device]["result"]
@@ -142,56 +156,69 @@ async def execute_playbook(session: meshctrl.Session, targets: dict, playbook: d
             "data": task_batch
         }
         round += 1
-    
-    output_text(("-" * 40), False)
-    output_text((json.dumps(responses_list,indent=4)), True)
+
+    console(("-" * 40))
+    console((json.dumps(responses_list,indent=4)), True)
 
 async def main():
     parser = argparse.ArgumentParser(description="Process command-line arguments")
-    parser.add_argument("-pb", "--playbook", type=str, help="Path to the playbook file.", required=True)
-    parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./api.conf).", required=False)
+    parser.add_argument("-pb", "--playbook", type=str, help="Path to the playbook yaml file.", required=True)
+
+    parser.add_argument("-oc", "--oscategories", type=str, help="Path to the Operating System categories JSON file.", required=False, default="./os_categories.json")
+    parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./meshcentral.conf).", required=False, default="./meshcentral.conf")
     parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the playbook.", required=False)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output", required=False)
 
     global args
     args = parser.parse_args()
+    local_categories_file = "./os_categories.json"
 
+    console(("-" * 40))
+    console("Playbook: " + args.playbook)
+    console("Operating System Categorisation file: " + args.oscategories)
+    console("Congiguration file: " + args.conf)
+    console("Grace: " + str((not args.nograce))) # Negation of bool for correct explanation
+    console("Silent: False") # Can be pre-defined because if silent flag was passed then none of this would be printed.
+
+    console(("-" * 40))
+    console(("\x1B[3mTrying to load the MeshCentral account credential file...\x1B[0m"))
+    console(("\x1B[3mTrying to load the Playbook yaml file and compile it into something workable...\x1B[0m"))
+    console(("\x1B[3mTrying to load the Operating System categorisation JSON file...\x1B[0m"))
     try:
-        output_text(("-" * 40), False)
-        output_text(("\x1B[3mTrying to load the MeshCentral account credential file...\x1B[0m"), False)
-        output_text(("\x1B[3mTrying to load the Playbook yaml file and compile it into something workable...\x1B[0m"), False)
+        with open(local_categories_file, "r") as file:
+            os_categories = json.load(file)
 
         credentials, playbook = await asyncio.gather(
-            (load_config() if args.conf is None else load_config(args.conf)),
+            (load_config()),
             (compile_book(args.playbook))
         )
 
-        output_text(("\x1B[3mConnecting to MeshCentral and establish a session using variables from previous credential file.\x1B[0m"), False)
+        console(("\x1B[3mConnecting to MeshCentral and establish a session using variables from previous credential file.\x1B[0m"))
         session = await init_connection(credentials)
-    
-        output_text(("\x1B[3mGenerating group list with nodes and reference the targets from that.\x1B[0m"), False)
+
+        console(("\x1B[3mGenerating group list with nodes and reference the targets from that.\x1B[0m"))
         group_list = await compile_group_list(session)
-        targets_list = await gather_targets(playbook, group_list)
+        targets_list = await gather_targets(playbook, group_list, os_categories)
 
         if len(targets_list) == 0:
-            output_text(("\033[91mNo targets found or targets unreachable, quitting.\x1B[0m"), True)
+            console(("\033[91mNo targets found or targets unreachable, quitting.\x1B[0m"), True)
         else:
-            output_text(("-" * 40), False)
+            console(("-" * 40))
             target_name = playbook["group"] if "group" in playbook else playbook["device"] # Quickly get the name.
-            output_text(("\033[91mExecuting playbook on the target(s): " + target_name + ".\x1B[0m"), False)
+            console(("\033[91mExecuting playbook on the target(s): " + target_name + ".\x1B[0m"))
+
             if not args.nograce:
-                output_text(("\033[91mInitiating grace-period...\x1B[0m"), False)
+                console(("\033[91mInitiating grace-period...\x1B[0m"))
                 for x in range(3):
-                    output_text(("\033[91m{}...\x1B[0m".format(x+1)), False)
+                    console(("\033[91m{}...\x1B[0m".format(x+1)))
                     await asyncio.sleep(1)
-            output_text(("-" * 40), False)
+            console(("-" * 40))
             await execute_playbook(session, targets_list, playbook, group_list)
 
         await session.close()
 
     except OSError as message:
-        output_text(message, True)
-
+        console(message, True)
 
 if __name__ == "__main__":
     asyncio.run(main())
