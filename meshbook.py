@@ -141,21 +141,53 @@ async def gather_targets(playbook: dict, group_list: dict[str, list[dict]], os_c
     target_list = []
     target_os = playbook.get("target_os")
 
-    if "device" in playbook:
-        pseudo_target = playbook["device"]
+    async def process_device_or_group(pseudo_target, group_list, os_categories, target_os) -> list[str]:
+        """Helper function to process devices or groups."""
 
+        matched_devices = []
         for group in group_list:
             for device in group_list[group]:
                 if device["device_name"] == pseudo_target:
-                    matched_devices = await filter_targets([device], os_categories, target_os)
+                    matched_devices.append(device)
+
+        if matched_devices:
+            return await filter_targets(matched_devices, os_categories, target_os)
+        return []
+
+    match playbook:
+        case {"device": pseudo_target}:  # Single device target
+            if isinstance(pseudo_target, str):
+                matched_devices = await process_device_or_group(pseudo_target, group_list, os_categories, target_os)
+                target_list.extend(matched_devices)
+
+            else:
+                console("\033[91mPlease use devices (Notice the 'S') for multiple devices.\x1B[0m", True)
+
+        case {"devices": pseudo_target}:  # List of devices
+            if isinstance(pseudo_target, list):
+                for sub_pseudo_device in pseudo_target:
+                    matched_devices = await process_device_or_group(sub_pseudo_device, group_list, os_categories, target_os)
                     target_list.extend(matched_devices)
 
-    elif "group" in playbook:
-        pseudo_target = playbook["group"]
+            else:
+                console("\033[91mThe 'devices' method is being used, but only one string is given. Did you mean 'device'?\x1B[0m", True)
 
-        if pseudo_target in group_list:
-            matched_devices = await filter_targets(group_list[pseudo_target], os_categories, target_os)
-            target_list.extend(matched_devices)
+        case {"group": pseudo_target}:  # Single group target
+            if isinstance(pseudo_target, str) and pseudo_target in group_list:
+                matched_devices = await filter_targets(group_list[pseudo_target], os_categories, target_os)
+                target_list.extend(matched_devices)
+
+            else:
+                console("\033[91mPlease use groups (Notice the 'S') for multiple groups.\x1B[0m", True)
+
+        case {"groups": pseudo_target}:  # List of groups
+            if isinstance(pseudo_target, list):
+                for sub_pseudo_target in pseudo_target:
+                    if sub_pseudo_target in group_list:
+                        matched_devices = await filter_targets(group_list[sub_pseudo_target], os_categories, target_os)
+                        target_list.extend(matched_devices)
+            else:
+                console("\033[91mThe 'groups' method is being used, but only one string is given. Did you mean 'group'?\x1B[0m", True)
 
     return target_list
 
@@ -220,10 +252,10 @@ async def main():
         console("Operating System Categorisation file: " + args.oscategories)
         console("Congiguration file: " + args.conf)
         if "device" in playbook:
-            console("Target device: " + playbook["device"])
+            console("Target device: " + str(playbook["device"]))
 
         elif "group" in playbook:
-            console("Target group: " + playbook["group"])
+            console("Target group: " + str(playbook["group"]))
 
         console("Grace: " + str((not args.nograce))) # Negation of bool for correct explanation
         console("Silent: False") # Can be pre-defined because if silent flag was passed then none of this would be printed.
@@ -249,7 +281,20 @@ async def main():
 
         else:
             console(("-" * 40))
-            target_name = playbook["group"] if "group" in playbook else playbook["device"] # Quickly get the name.
+
+            match playbook:
+                case {"group": candidate_target_name}:
+                    target_name = candidate_target_name
+
+                case {"groups": candidate_target_name}:
+                    target_name = str(candidate_target_name)
+
+                case {"device": candidate_target_name}:
+                    target_name = candidate_target_name
+
+                case {"devices": candidate_target_name}:
+                    target_name = str(candidate_target_name)
+
             console(("\033[91mExecuting playbook on the target(s): " + target_name + ".\x1B[0m"))
 
             if not args.nograce:
