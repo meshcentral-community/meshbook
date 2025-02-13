@@ -1,7 +1,7 @@
 ---
 name: Echo some text in the terminal of the device
 group: "Development"
-target_os: "Debian"
+target_os: "Linux" # <----
 variables:
   - name: package_manager
     value: "apt"

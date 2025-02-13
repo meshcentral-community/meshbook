@@ -96,22 +96,40 @@ async def compile_group_list(session: meshctrl.Session) -> dict:
     return local_device_list
 
 async def filter_targets(devices: list[dict], os_categories: dict, target_os: str = None) -> list[str]:
-    """Filters devices based on reachability and optional OS criteria."""
+    """Filters devices based on reachability and optional OS criteria, supporting nested OS categories."""
     valid_devices = []
+
+    def get_os_variants(category: str, os_map: dict) -> set:
+        """Extracts all OS names under a given category if it exists."""
+        for key, value in os_map.items():
+            if key == category:
+                if isinstance(value, dict):  # Expand nested categories
+                    os_set = set()
+                    for subcat in value:
+                        os_set.update(get_os_variants(subcat, value))
+                    return os_set
+                elif isinstance(value, list):  # Direct OS list
+                    return set(value)
+        return set()
+
+    allowed_os = set()
+
+    # Identify correct OS filtering scope
+    for key in os_categories:
+        if key == target_os:
+            allowed_os = get_os_variants(target_os, os_categories)
+            break  # Stop searching once a match is found
+
+        if isinstance(os_categories[key], dict) and target_os in os_categories[key]:
+            allowed_os = get_os_variants(target_os, os_categories[key])
+            break  # Stop searching once a match is found
 
     for device in devices:
         if not device["reachable"]:
             continue  # Skip unreachable devices.
 
-        match target_os:
-            case None:  # No filtering needed.
-                pass
-            case _ if target_os in os_categories and device["device_os"] in os_categories[target_os]:
-                pass  # Allowed OS, continue processing.
-            case _:  
-                continue  # Skip if the OS is not in the allowed category.
-
-        valid_devices.append(device["device_id"])
+        if not target_os or device["device_os"] in allowed_os:
+            valid_devices.append(device["device_id"])
 
     return valid_devices
 

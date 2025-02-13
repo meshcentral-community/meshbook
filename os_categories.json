@@ -1,9 +1,16 @@
 {
-    "Debian": [
-        "Debian GNU/Linux 12 (bookworm)",
-        "Debian GNU/Linux 11 (bullseye)"
-    ],
-    "Ubuntu": [
-        "Ubuntu 24.04.1 LTS"
-    ]
+    "Linux": {
+        "Debian": [
+            "Debian GNU/Linux 12 (bookworm)",
+            "Debian GNU/Linux 11 (bullseye)"
+        ],
+        "Ubuntu": [
+            "Ubuntu 24.04.1 LTS"
+        ]
+    },
+    "MacOS": {
+        "Sequoia": [
+            "macOS 15.0.1"
+        ]
+    }
 }
