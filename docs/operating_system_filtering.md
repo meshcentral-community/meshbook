@@ -62,4 +62,4 @@ Once the function has the allowed OS versions, it checks each device:
 #### **Final Output:**
 - If `target_os="Linux"`: `["A1", "A2"]`
 - If `target_os="Debian"`: `["A1"]`
-- If `target_os=None`: `["A1", "A2", "A3"]` or `target_os` is undefined
+- If `target_os=None` or `target_os` is undefined: `["A1", "A2", "A3"]`
