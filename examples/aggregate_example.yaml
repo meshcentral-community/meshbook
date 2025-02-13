@@ -1,6 +1,7 @@
 ---
 name: Echo some text in the terminal of the device
-group: "Dev"
+group: "Development"
+target_os: "Debian"
 variables:
   - name: package_manager
     value: "apt"
