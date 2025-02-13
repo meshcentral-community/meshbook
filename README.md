@@ -20,37 +20,41 @@ To install, follow the following commands:<br>
 
 ### Linux setup:
 
-```shell
+```bash
 git clone https://github.com/daanselen/meshbook
 cd ./meshbook
 python3 -m venv ./venv
 source ./venv/bin/activate
 pip3 install -r ./requirements.txt
+cp ./templates/meshcentral.conf.template ./meshcentral.conf
 ```
 
-### Windows setup:
+### Windows setup (PowerShell, not cmd):
 
 ```shell
 git clone https://github.com/daanselen/meshbook
 cd ./meshbook
-python3 -m venv ./venv
+python -m venv ./venv # or python3 when done through the Microsoft Store.
 .\venv\Scripts\activate # Make sure to check the terminal prefix.
 pip3 install -r ./requirements.txt
+cp .\templates\meshcentral.conf.template .\meshcentral.conf
 ```
 
-Now copy the configuration template from ./templates and fill it in with the correct details. The url should start with `wss://`.<br>
+Now copy the configuration template from ./templates and fill it in with the correct details (remove .template from the file) this is shown in the last step of the setup(s).<br>
+The url should start with `wss://`.<br>
+You can check pre-made examples in the examples directory, make sure the values are set to your situation.<br>
 After this you can use meshbook, for example:
 
 ### Linux run:
 
-```shell
+```bash
 python3 .\meshbook.py -pb .\examples\echo.yaml
 ```
 
 ### Windows run:
 
 ```shell
-.\venv\Scripts\python.exe .\meshbook.py -pb .\examples\echo.yaml
+.\venv\Scripts\python.exe .\meshbook.py -pb .\examples\echo_example.yaml
 ```
 
 ### How to check if everything is okay?
@@ -80,6 +84,7 @@ So to target for example a mesh/group in MeshCentral called: "Nerthus" do:
 ---
 name: example configuration
 group: "Nerthus"
+#target_os: "Linux" # <--- according to os_categories.json
 variables:
   - name: var1
     value: "This is the first variable"
@@ -118,6 +123,7 @@ You can expand the command chain as follows:<br>
 ---
 name: Echo a string to the terminal through the meshbook example.
 group: "Dev"
+#target_os: "Linux" # <--- according to os_categories.json
 variables:
   - name: file
     value: "/etc/os-release"
@@ -129,34 +135,30 @@ tasks:
 The following response it received when executing the first yaml of the above files (without the `-s` parameters, which just outputs the below JSON).
 
 ```shell
-python3 meshbook.py -pb examples/echo_example.yaml
+~/meshbook$ python3 meshbook.py -pb examples/echo_example.yaml
+----------------------------------------
+Playbook: examples/echo_example.yaml
+Operating System Categorisation file: ./os_categories.json
+Congiguration file: ./meshcentral.conf
+Target group: Development
+Grace: True
+Silent: False
 ----------------------------------------
 Trying to load the MeshCentral account credential file...
 Trying to load the Playbook yaml file and compile it into something workable...
+Trying to load the Operating System categorisation JSON file...
 Connecting to MeshCentral and establish a session using variables from previous credential file.
 Generating group list with nodes and reference the targets from that.
 ----------------------------------------
-Executing playbook on the targets.
+Executing playbook on the target(s): Development.
+Initiating grace-period...
+1...
+2...
+3...
+----------------------------------------
 1. Running: Echo!
 ----------------------------------------
-{
-    "Task 1": [
-        {
-            "complete": true,
-            "result": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\" NAME=\"Debian GNU/Linux\" VERSION_ID=\"12\" VERSION=\"12 (bookworm)\" VERSION_CODENAME=bookworm ID=debian HOME_URL=\"https://www.debian.org/\" SUPPORT_URL=\"https://www.debian.org/support\" BUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
-            "command": "echo $(cat /etc/os-release)",
-            "device_id": "<Node-Unique>",
-            "device_name": "raspberrypi5"
-        },
-        {
-            "complete": true,
-            "result": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\" NAME=\"Debian GNU/Linux\" VERSION_ID=\"12\" VERSION=\"12 (bookworm)\" VERSION_CODENAME=bookworm ID=debian HOME_URL=\"https://www.debian.org/\" SUPPORT_URL=\"https://www.debian.org/support\" BUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
-            "command": "echo $(cat /etc/os-release)",
-            "device_id": "<Node-Unique>",
-            "device_name": "Cubic"
-        }
-    ]
-}
+{"Task 1": "ALL THE DATA"} # Not sharing due to PID
 ```
 The above without `-s` is quite verbose. use `--help` to read about parameters and getting a minimal response for example.
 

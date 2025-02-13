@@ -1,6 +1,7 @@
 ---
 name: Ping Multiple Points
 group: "Kubernetes"
+#target_os: "Debian"
 variables:
   - name: host1
     value: "1.1.1.1"

@@ -1,6 +1,7 @@
 ---
 name: Refresh the apt cache
-device: Cubic
+device: "<Device-Name>"
+#target_os: "Linux"
 variables:
   - name: package_manager
     value: "apt"
