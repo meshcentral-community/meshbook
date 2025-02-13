@@ -6,6 +6,9 @@
         ],
         "Ubuntu": [
             "Ubuntu 24.04.1 LTS"
+        ],
+        "Ubuntu 22": [
+            "Ubuntu 22.04.1 LTS"
         ]
     },
     "MacOS": {

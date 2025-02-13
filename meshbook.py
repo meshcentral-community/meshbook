@@ -101,6 +101,7 @@ async def filter_targets(devices: list[dict], os_categories: dict, target_os: st
 
     def get_os_variants(category: str, os_map: dict) -> set:
         """Extracts all OS names under a given category if it exists."""
+
         for key, value in os_map.items():
             if key == category:
                 if isinstance(value, dict):  # Expand nested categories
@@ -124,6 +125,7 @@ async def filter_targets(devices: list[dict], os_categories: dict, target_os: st
             allowed_os = get_os_variants(target_os, os_categories[key])
             break  # Stop searching once a match is found
 
+    # Filter out unreachable devices
     for device in devices:
         if not device["reachable"]:
             continue  # Skip unreachable devices.
