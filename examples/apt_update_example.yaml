@@ -6,8 +6,8 @@ variables:
   - name: package_manager
     value: "apt"
 tasks:
-  - name: refresh the cache
+  - name: refresh the {{ package_manager }} cache
     command: "{{ package_manager }} update"
 
-  - name: display available upgrades
+  - name: display available upgrades with {{ package_manager }}
     command: "{{ package_manager }} list --upgradable"
