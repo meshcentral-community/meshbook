@@ -31,12 +31,12 @@ class text_color:
         italic = "\x1B[3m"
         reset = "\x1B[0m"
 
-def console(message: str, required: bool=False):
+def console(message: str, final: bool=False):
     '''
     Helper function for terminal output, with a couple variables for the silent flag. Also clears terminal color each time.
     '''
-    if required:
-        print(message + text_color.reset)
+    if final:
+        print(message) # Assuming final message, there is no need for clearing.
     elif not args.silent:
         print(message + text_color.reset)
 
