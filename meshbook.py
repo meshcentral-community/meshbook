@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 from base64 import b64encode
+from colorama import just_fix_windows_console
 from configparser import ConfigParser
 import json
 import meshctrl
@@ -282,6 +283,7 @@ async def execute_meshbook(session: meshctrl.Session, targets: dict, meshbook: d
         console(json.dumps(responses_list), True)
 
 async def main():
+    just_fix_windows_console()
     '''
     Main function where the program starts. Place from which all comands originate (eventually).
     '''
@@ -361,7 +363,7 @@ async def main():
                 case {"devices": candidate_target_name}:
                     target_name = str(candidate_target_name)
 
-            console(text_color.yellow + "Executing meshbook on the target(s): " + target_name + ".")
+            console(text_color.yellow + "Executing meshbook on the target(s): " + text_color.green + target_name + ".")
 
             if not args.nograce:
                 console(text_color.yellow + "Initiating grace-period...")
