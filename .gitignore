@@ -1,5 +1,6 @@
 *.conf
 venv
+meshbooks
 .vscode
 
 # temporary or to prevent big commits
