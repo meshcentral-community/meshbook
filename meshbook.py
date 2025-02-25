@@ -102,7 +102,14 @@ async def replace_placeholders(meshbook: dict) -> dict:
     Replace the placeholders in both name and command fields of the tasks. According to the variables defined in the variables list.
     '''
 
-    variables = {var["name"]: var["value"] for var in meshbook.get("variables", [])}
+    variables = {}
+    if "variables" in meshbook and isinstance(meshbook["variables"], list):
+        for var in meshbook["variables"]:
+            var_name = var["name"]
+            var_value = var["value"]
+            variables[var_name] = var_value
+    else:
+        return meshbook
 
     for task in meshbook.get("tasks", []):
         task_name = task.get("name")
