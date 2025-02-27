@@ -1,4 +1,4 @@
 [meshcentral-account]
-websocket_url =
+hostname =
 username = 
 password =

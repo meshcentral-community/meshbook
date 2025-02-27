@@ -66,7 +66,7 @@ async def init_connection(credentials: dict) -> meshctrl.Session:
     '''
 
     session = meshctrl.Session(
-        credentials['websocket_url'],
+        credentials['hostname'],
         user=credentials['username'],
         password=credentials['password']
     )
