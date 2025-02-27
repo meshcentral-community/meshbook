@@ -1,0 +1,19 @@
+---
+name: Refresh the apt cache
+group: "Dev"
+#target_os: "Linux"
+variables:
+  - name: package_manager
+    value: "apt"
+tasks:
+  - name: refresh the cache
+    command: "{{ package_manager }} update"
+
+  - name: display available upgrades
+    command: "{{ package_manager }} list --upgradable"
+
+  - name: apply upgrades
+    command: "{{ package_manager }} upgrade -y"
+
+  - name: cleanup remaining packages
+    command: "{{ package_manager }} autoremove -y"

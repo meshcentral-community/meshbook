@@ -1,0 +1,11 @@
+---
+name: Echo a string to the terminal through the meshbook example.
+group: "Endpoint"
+target_os: "Windows"
+powershell: True
+#variables:
+#  - name: file
+#    value: "/etc/os-release"
+tasks:
+  - name: Echo!
+    command: "Get-ComputerInfo | Select-Object CsName, OsName, OsArchitecture, OsLastBootUpTime | Write-Output"

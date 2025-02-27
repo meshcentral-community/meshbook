@@ -260,13 +260,16 @@ async def execute_meshbook(session: meshctrl.Session, targets: dict, meshbook: d
     '''
     Actual function that handles meshbook execution, also responsible for formatting the resulting JSON.
     '''
-
+        
     responses_list = {}
     round = 1
 
     for task in meshbook["tasks"]:
         console(text_color.green + str(round) + ". Running: " + task["name"])
-        response = await session.run_command(nodeids=targets, command=task["command"],ignore_output=False,timeout=900)
+        if meshbook["powershell"]:
+            response = await session.run_command(nodeids=targets, command=task["command"],powershell=True,ignore_output=False,timeout=900)
+        else:
+            response = await session.run_command(nodeids=targets, command=task["command"],ignore_output=False,timeout=900)
 
         task_batch = []
         for device in response:
@@ -325,7 +328,11 @@ async def main():
         console("meshbook: " + text_color.yellow + args.meshbook)
         console("Operating System Categorisation file: " + text_color.yellow + args.oscategories)
         console("Configuration file: " + text_color.yellow + args.conf)
-        console("Target Operating System category given: " + text_color.yellow + meshbook["target_os"])
+        if "target_os" in meshbook:
+            console("Target Operating System category given: " + text_color.yellow + meshbook["target_os"])
+        else:
+            console("Target Operating System category given: " + text_color.yellow + "All")
+
         if "device" in meshbook:
             console("Target device: " + text_color.yellow + str(meshbook["device"]))
 

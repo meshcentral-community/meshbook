@@ -1,0 +1,8 @@
+---
+name: Echo a string to the terminal through the meshbook example.
+group: "Endpoint"
+target_os: "Windows"
+powershell: True
+tasks:
+  - name: Get some update information
+    command: "Get-HotFix | Select-Object PSComputerName, HotFixID, InstalledOn"

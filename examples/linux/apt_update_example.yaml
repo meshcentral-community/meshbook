@@ -1,0 +1,13 @@
+---
+name: Refresh the apt cache
+device: "<Device-Name>"
+#target_os: "Linux"
+variables:
+  - name: package_manager
+    value: "apt"
+tasks:
+  - name: refresh the {{ package_manager }} cache
+    command: "{{ package_manager }} update"
+
+  - name: display available upgrades with {{ package_manager }}
+    command: "{{ package_manager }} list --upgradable"

@@ -84,7 +84,8 @@ So to target for example a mesh/group in MeshCentral called: "Nerthus" do:
 ---
 name: example configuration
 group: "Nerthus"
-#target_os: "Linux" # <--- according to os_categories.json
+#target_os: "Linux" # <--- according to os_categories.json.
+powershell: True    # <--- this can be important for Windows clients.
 variables:
   - name: var1
     value: "This is the first variable"
@@ -106,6 +107,12 @@ This is done to imitate popular methods. See below [from the example](./examples
 The tasks you want to run should be contained under the `tasks:` with two fields, `name` and `command`.<br>
 The name field is for the user of meshbook, to clarify what the following command does in a summary.<br>
 The command field actually gets executed on the end-point.<br>
+
+### Windows Client Extra-information:
+
+If you want to launch commands at Windows machines, make sure you have your `os_categories.conf` up-to-date with the correct reported Windows versions.<br>
+And then make sure to create compatible commands, see: [windows examples](./examples/windows)<br>
+Related is the yaml option: `powershell: True`.
 
 ### Granual Operating System filtering:
 
