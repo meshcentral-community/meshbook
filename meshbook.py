@@ -296,7 +296,7 @@ async def main():
     '''
 
     parser = argparse.ArgumentParser(description="Process command-line arguments")
-    parser.add_argument("-pb", "--meshbook", type=str, help="Path to the meshbook yaml file.", required=True)
+    parser.add_argument("-mb", "--meshbook", type=str, help="Path to the meshbook yaml file.", required=True)
 
     parser.add_argument("-oc", "--oscategories", type=str, help="Path to the Operating System categories JSON file.", required=False, default="./os_categories.json")
     parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./meshcentral.conf).", required=False, default="./meshcentral.conf")
