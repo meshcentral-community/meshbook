@@ -266,7 +266,7 @@ async def execute_meshbook(session: meshctrl.Session, targets: dict, meshbook: d
 
     for task in meshbook["tasks"]:
         console(text_color.green + str(round) + ". Running: " + task["name"])
-        if meshbook["powershell"]:
+        if "powershell" in meshbook and meshbook["powershell"]:
             response = await session.run_command(nodeids=targets, command=task["command"],powershell=True,ignore_output=False,timeout=900)
         else:
             response = await session.run_command(nodeids=targets, command=task["command"],ignore_output=False,timeout=900)
