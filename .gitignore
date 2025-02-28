@@ -1,6 +1,6 @@
 *.conf
 venv
-meshbooks
+books
 .vscode
 
 # Byte-compiled / optimized / DLL files

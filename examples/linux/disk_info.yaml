@@ -1,13 +1,8 @@
 ---
 name: Use DF to get drive information in JSON.
-groups: Placeholder
+group: Systemec Development
 target_os: "Linux"
 tasks:
   - name: Get disk-info with df returning JSON.
     command: >
-      df -Th -x overlay -x tmpfs -x devtmpfs | \
-      awk 'NR==1 || $1 ~ ".+"{print $3, $4, $5, $7, $2}' | \
-      awk 'NR>1 {printf "{\"size\":\"%s\",\"used\":\"%s\",\"available\":\"%s\",\"mount_point\":\"%s\",\"type\":\"%s\"},", $1, $2, $3, $4, $5}' | \
-      sed '$ s/,$//' | \
-      awk 'BEGIN {printf "["} {printf "%s", $0} END {printf "]"}' 
-      exit
+      df -Th -x overlay -x tmpfs -x devtmpfs | awk 'NR>1 {printf "%s{\"size\":\"%s\",\"used\":\"%s\",\"available\":\"%s\",\"mount_point\":\"%s\",\"type\":\"%s\"}", (NR==2?"[":","), $3, $4, $5, $7, $2} END {print "]"}'
