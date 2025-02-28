@@ -240,7 +240,7 @@ async def gather_targets(meshbook: dict, group_list: dict[str, list[dict]], os_c
             if isinstance(pseudo_target, str) and pseudo_target in group_list:
                 matched_devices = await filter_targets(group_list[pseudo_target], os_categories, target_os)
                 target_list.extend(matched_devices)
-            if pseudo_target not in group_list:
+            elif pseudo_target not in group_list:
                 console(text_color.yellow + "Targeted group not found on the MeshCentral server.", True)
             else:
                 console(text_color.yellow + "Please use groups (Notice the 'S') for multiple groups.", True)
