@@ -42,7 +42,7 @@ def console(message: str, final: bool=False):
 
 async def load_config(segment: str = 'meshcentral-account') -> dict:
     '''
-    Function that loads the segment from the meshcentral.conf (by default) file and returns the it in a dict.
+    Function that loads the segment from the meshbook.conf (by default) file and returns the it in a dict.
     '''
 
     conf_file = args.conf
@@ -302,7 +302,7 @@ async def main():
     parser.add_argument("-mb", "--meshbook", type=str, help="Path to the meshbook yaml file.", required=True)
 
     parser.add_argument("-oc", "--oscategories", type=str, help="Path to the Operating System categories JSON file.", required=False, default="./os_categories.json")
-    parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./meshcentral.conf).", required=False, default="./meshcentral.conf")
+    parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./meshbook.conf).", required=False, default="./meshbook.conf")
     parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the meshbook.", required=False)
     parser.add_argument("-i", "--indent", action="store_true", help="Use an JSON indentation of 4 when this flag is passed.", required=False)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output", required=False)
