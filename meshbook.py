@@ -251,6 +251,10 @@ async def gather_targets(meshbook: dict, group_list: dict[str, list[dict]], os_c
                     if sub_pseudo_target in group_list:
                         matched_devices = await filter_targets(group_list[sub_pseudo_target], os_categories, target_os)
                         target_list.extend(matched_devices)
+            if pseudo_target.lower() == "all":
+                for group in group_list:
+                    matched_devices = await filter_targets(group_list[group], os_categories, target_os)
+                    target_list.extend(matched_devices)
             else:
                 console(text_color.yellow + "The 'groups' method is being used, but only one string is given. Did you mean 'group'?", True)
 
