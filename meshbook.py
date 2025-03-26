@@ -151,7 +151,7 @@ async def compile_group_list(session: meshctrl.Session) -> dict:
         })
     return local_device_list
 
-async def filter_targets(devices: list[dict], os_categories: dict, target_os: str = None) -> list[str]:
+async def filter_targets(devices: list[dict], os_categories: dict, target_os: str = None, target_tag: str = None) -> list[str]:
     '''
     Filters devices based on reachability and optional OS criteria, supporting nested OS categories.
     '''
