@@ -119,6 +119,11 @@ Related is the yaml option: `powershell: True`.
 I have made the program so it can have a filter with the Operating systems. If you have a mixed group, please read:
 [This explanation](./docs/operating_system_filtering.md)
 
+### Tag filtering:
+
+Filtering on MeshCentral tags is also possible with `target_tag` inside the meshbook. This string is case-sensitive, lower- and uppercase must match.<br>
+This is done because its human made and therefor needs to be keps well administrated.
+
 # Example:
 
 For the example, I used the following yaml file (you can find more in [this directory](./examples/)):
