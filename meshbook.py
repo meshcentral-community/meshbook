@@ -191,13 +191,10 @@ async def filter_targets(devices: list[dict], os_categories: dict, target_os: st
         if not device["reachable"]:
             continue  # Skip unreachable devices.
 
-        if target_os and target_tag not in device["device_tags"]:
+        if target_tag and target_tag not in device["device_tags"]:
             continue
 
         if device["device_os"] not in allowed_os:
-            continue
-
-        if target_os and target_os != device["device_os"]:
             continue
 
         valid_devices.append(device["device_id"])
