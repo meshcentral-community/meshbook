@@ -42,7 +42,7 @@ def console(message: str, final: bool=False):
 
 async def load_config(segment: str = 'meshcentral-account') -> dict:
     '''
-    Function that loads the segment from the meshbook.conf (by default) file and returns the it in a dict.
+    Function that loads the segment from the config.conf (by default) file and returns the it in a dict.
     '''
 
     conf_file = args.conf
@@ -186,13 +186,20 @@ async def filter_targets(devices: list[dict], os_categories: dict, target_os: st
             allowed_os = get_os_variants(target_os, os_categories[key])
             break  # Stop searching once a match is found
 
-    # Filter out unreachable devices
+    # Filter out unwanted or unreachable devices.
     for device in devices:
         if not device["reachable"]:
             continue  # Skip unreachable devices.
 
-        if not target_os or device["device_os"] in allowed_os:
-            valid_devices.append(device["device_id"])
+        print(target_tag)
+        print(device["device_tags"])
+        if target_tag and target_tag not in device["device_tags"]:
+            continue
+
+        if device["device_os"] not in allowed_os:
+            continue
+
+        valid_devices.append(device["device_id"])
 
     return valid_devices
 
@@ -203,6 +210,7 @@ async def gather_targets(meshbook: dict, group_list: dict[str, list[dict]], os_c
 
     target_list = []
     target_os = meshbook.get("target_os")
+    target_tag = meshbook.get("target_tag")
 
     async def process_device_or_group(pseudo_target, group_list, os_categories, target_os) -> list[str]:
         '''
@@ -216,7 +224,7 @@ async def gather_targets(meshbook: dict, group_list: dict[str, list[dict]], os_c
                     matched_devices.append(device)
 
         if matched_devices:
-            return await filter_targets(matched_devices, os_categories, target_os)
+            return await filter_targets(matched_devices, os_categories, target_os, target_tag)
         return []
 
     match meshbook:
@@ -238,7 +246,7 @@ async def gather_targets(meshbook: dict, group_list: dict[str, list[dict]], os_c
 
         case {"group": pseudo_target}:  # Single group target
             if isinstance(pseudo_target, str) and pseudo_target in group_list:
-                matched_devices = await filter_targets(group_list[pseudo_target], os_categories, target_os)
+                matched_devices = await filter_targets(group_list[pseudo_target], os_categories, target_os, target_tag)
                 target_list.extend(matched_devices)
             elif pseudo_target not in group_list:
                 console(text_color.yellow + "Targeted group not found on the MeshCentral server.", True)
@@ -249,11 +257,11 @@ async def gather_targets(meshbook: dict, group_list: dict[str, list[dict]], os_c
             if isinstance(pseudo_target, list):
                 for sub_pseudo_target in pseudo_target:
                     if sub_pseudo_target in group_list:
-                        matched_devices = await filter_targets(group_list[sub_pseudo_target], os_categories, target_os)
+                        matched_devices = await filter_targets(group_list[sub_pseudo_target], os_categories, target_os, target_tag)
                         target_list.extend(matched_devices)
             if pseudo_target.lower() == "all":
                 for group in group_list:
-                    matched_devices = await filter_targets(group_list[group], os_categories, target_os)
+                    matched_devices = await filter_targets(group_list[group], os_categories, target_os, target_tag)
                     target_list.extend(matched_devices)
             else:
                 console(text_color.yellow + "The 'groups' method is being used, but only one string is given. Did you mean 'group'?", True)
@@ -289,7 +297,7 @@ async def execute_meshbook(session: meshctrl.Session, targets: dict, meshbook: d
         }
         round += 1
 
-    console(("-" * 40))
+    console(text_color.reset + ("-" * 40))
     if args.indent:
         console((json.dumps(responses_list,indent=4)), True)
 
@@ -306,7 +314,7 @@ async def main():
     parser.add_argument("-mb", "--meshbook", type=str, help="Path to the meshbook yaml file.", required=True)
 
     parser.add_argument("-oc", "--oscategories", type=str, help="Path to the Operating System categories JSON file.", required=False, default="./os_categories.json")
-    parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./meshbook.conf).", required=False, default="./meshbook.conf")
+    parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./config.conf).", required=False, default="./config.conf")
     parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the meshbook.", required=False)
     parser.add_argument("-i", "--indent", action="store_true", help="Use an JSON indentation of 4 when this flag is passed.", required=False)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output", required=False)
@@ -328,7 +336,7 @@ async def main():
         The following section mainly displays used variables and first steps of the program to the console.
         '''
 
-        console(("-" * 40))
+        console(text_color.reset + ("-" * 40))
         console("meshbook: " + text_color.yellow + args.meshbook)
         console("Operating System Categorisation file: " + text_color.yellow + args.oscategories)
         console("Configuration file: " + text_color.yellow + args.conf)
@@ -347,7 +355,7 @@ async def main():
         console("Silent: " + text_color.yellow + "False") # Can be pre-defined because if silent flag was passed then none of this would be printed.
 
         session = await init_connection(credentials)
-        console(("-" * 40))
+        console(text_color.reset + ("-" * 40))
         console(text_color.italic + "Trying to load the MeshCentral account credential file...")
         console(text_color.italic + "Trying to load the meshbook yaml file and compile it into something workable...")
         console(text_color.italic + "Trying to load the Operating System categorisation JSON file...")
@@ -363,10 +371,10 @@ async def main():
 
         if len(targets_list) == 0:
             console(text_color.red + "No targets found or targets unreachable, quitting.", True)
-            console(("-" * 40), True)
+            console(text_color.reset + ("-" * 40), True)
 
         else:
-            console(("-" * 40))
+            console(text_color.reset + ("-" * 40))
 
             match meshbook:
                 case {"group": candidate_target_name}:
@@ -390,8 +398,9 @@ async def main():
                     console(text_color.yellow + "{}...".format(x+1)) # Countdown!
                     await asyncio.sleep(1)
 
-            console(("-" * 40))
-            await execute_meshbook(session, targets_list, meshbook, group_list)
+            console(text_color.reset + ("-" * 40))
+            print(json.dumps(targets_list,indent=4))
+            #await execute_meshbook(session, targets_list, meshbook, group_list)
 
         await session.close()
 
