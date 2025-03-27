@@ -186,13 +186,21 @@ async def filter_targets(devices: list[dict], os_categories: dict, target_os: st
             allowed_os = get_os_variants(target_os, os_categories[key])
             break  # Stop searching once a match is found
 
-    # Filter out unreachable devices
+    # Filter out unwanted or unreachable devices.
     for device in devices:
         if not device["reachable"]:
             continue  # Skip unreachable devices.
 
-        if not target_os or device["device_os"] in allowed_os:
-            valid_devices.append(device["device_id"])
+        if target_os and target_tag not in device["device_tags"]:
+            continue
+
+        if device["device_os"] not in allowed_os:
+            continue
+
+        if target_os and target_os != device["device_os"]:
+            continue
+
+        valid_devices.append(device["device_id"])
 
     return valid_devices
 
