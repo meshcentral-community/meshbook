@@ -399,8 +399,7 @@ async def main():
                     await asyncio.sleep(1)
 
             console(text_color.reset + ("-" * 40))
-            print(json.dumps(targets_list,indent=4))
-            #await execute_meshbook(session, targets_list, meshbook, group_list)
+            await execute_meshbook(session, targets_list, meshbook, group_list)
 
         await session.close()
 
