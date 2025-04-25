@@ -8,6 +8,8 @@ from time import sleep
 from modules.console import console
 from modules.utilities import transform
 
+intertask_delay = 0.5
+
 class executor:
     async def execute_meshbook(args: argparse.Namespace, session: meshctrl.Session, compiled_device_list: dict, meshbook: dict, group_list: dict) -> None:
         '''
@@ -41,7 +43,7 @@ class executor:
                 "data": task_batch
             }
             round += 1
-            sleep(0.5) # Sleep for 0.5 seconds.
+            sleep(intertask_delay) # Sleep for x amount of time.
 
         for index, device in enumerate(offline): # Replace Device_id with actual human readable name
             device_name = await transform.translate_nodeid_to_name(device, group_list)
