@@ -154,13 +154,13 @@ async def main():
 
     parser.add_argument("-oc", "--oscategories", type=str, help="Path to the Operating System categories JSON file.", default="./os_categories.json")
     parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./config.conf).", default="./config.conf")
-    parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the meshbook.")
-    parser.add_argument("-i", "--indent", action="store_true", help="Use an JSON indentation of 4 when this flag is passed.")
-    parser.add_argument("-r", "--raw-result", action="store_true", help="Print the raw result.")
-    parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output.")
-    parser.add_argument("--shlex", action="store_true", help="Shlex the lines.")
+    parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the meshbook.", default=False)
+    parser.add_argument("-i", "--indent", action="store_true", help="Use an JSON indentation of 4 when this flag is passed.", default=False)
+    parser.add_argument("-r", "--raw-result", action="store_true", help="Print the raw result.", default=False)
+    parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output.", default=False)
+    parser.add_argument("--shlex", action="store_true", help="Shlex the lines.", default=False)
 
-    parser.add_argument("-v", "--version", action="store_true", help="Show the Meshbook version.")
+    parser.add_argument("--version", action="store_true", help="Show the Meshbook version.")
 
     args = parser.parse_args()
     local_categories_file = "./os_categories.json"
@@ -191,24 +191,24 @@ async def main():
         console.nice_print(args,
                            console.text_color.reset + ("-" * 40))
         console.nice_print(args,
-                           "meshbook: " + console.text_color.yellow + args.meshbook)
+                           "meshbook: " + console.text_color.yellow + args.meshbook + console.text_color.reset + ".")
         console.nice_print(args,
-                           "Operating System Categorisation file: " + console.text_color.yellow + args.oscategories)
+                           "Operating System Categorisation file: " + console.text_color.yellow + args.oscategories + console.text_color.reset + ".")
         console.nice_print(args,
-                           "Configuration file: " + console.text_color.yellow + args.conf)
+                           "Configuration file: " + console.text_color.yellow + args.conf + console.text_color.reset + ".")
 
         # TARGET OS PRINTING
         if "target_os" in meshbook:
             console.nice_print(args,
-                               "Target Operating System category given: " + console.text_color.yellow + meshbook["target_os"])
+                               "Target Operating System category given: " + console.text_color.yellow + meshbook["target_os"] + console.text_color.reset + ".")
         else:
             console.nice_print(args,
-                               "Target Operating System category given: " + console.text_color.yellow + "All")
+                               "Target Operating System category given: " + console.text_color.yellow + "All" + console.text_color.reset + ".")
             
         # Should Meshbook ignore categorisation?
         if "ignore_categorisation" in meshbook:
             console.nice_print(args,
-                                "Ignore the OS Categorisation file: " + console.text_color.yellow + str(meshbook["ignore_categorisation"]))
+                                "Ignore the OS Categorisation file: " + console.text_color.yellow + str(meshbook["ignore_categorisation"]) + console.text_color.reset + ".")
             if meshbook["ignore_categorisation"]:
                 console.nice_print(args,
                                 console.text_color.red + "!!!!\n" +
@@ -217,29 +217,29 @@ async def main():
                                 console.text_color.red + "\n!!!!")
         else:
             console.nice_print(args,
-                                "Ignore the OS Categorisation file: " + console.text_color.yellow + "False")
+                                "Ignore the OS Categorisation file: " + console.text_color.yellow + "False" + console.text_color.reset + ".")
         
         # TARGET TAG PRINTING
         if "target_tag" in meshbook:
             console.nice_print(args,
-                               "Target Device tag given: " + console.text_color.yellow + meshbook["target_tag"])
+                               "Target Device tag given: " + console.text_color.yellow + meshbook["target_tag"] + console.text_color.reset + ".")
         else:
             console.nice_print(args,
-                               "Target Device tag given: " + console.text_color.yellow + "All")
+                               "Target Device tag given: " + console.text_color.yellow + "All" + console.text_color.reset + ".")
 
         # TARGET PRINTING
         if "device" in meshbook:
             console.nice_print(args,
-                               "Target device: " + console.text_color.yellow + str(meshbook["device"]))
+                               "Target device: " + console.text_color.yellow + str(meshbook["device"]) + console.text_color.reset + ".")
         elif "devices" in meshbook:
             console.nice_print(args,
-                               "Target devices: " + console.text_color.yellow + str(meshbook["devices"]))
+                               "Target devices: " + console.text_color.yellow + str(meshbook["devices"]) + console.text_color.reset + ".")
         elif "group" in meshbook:
             console.nice_print(args,
-                               "Target group: " + console.text_color.yellow + str(meshbook["group"]))
+                               "Target group: " + console.text_color.yellow + str(meshbook["group"]) + console.text_color.reset + ".")
         elif "groups" in meshbook:
             console.nice_print(args,
-                               "Target groups: " + console.text_color.yellow + str(meshbook["groups"]))
+                               "Target groups: " + console.text_color.yellow + str(meshbook["groups"]) + console.text_color.reset + ".")
 
         # RUNNING PARAMETERS PRINTING
         console.nice_print(args, "Grace: " + console.text_color.yellow + str((not args.nograce))) # Negation of bool for correct explanation
@@ -269,11 +269,15 @@ async def main():
         compiled_device_list = await gather_targets(args, meshbook, group_list, os_categories)
 
         if len(compiled_device_list["target_list"]) == 0:
-            console.nice_print(args, console.text_color.red + "No targets found or targets unreachable, quitting.", True)
-            console.nice_print(args, console.text_color.reset + ("-" * 40), True)
+            console.nice_print(args,
+                               console.text_color.red + "No targets found or targets unreachable, quitting.", True)
+
+            console.nice_print(args,
+                               console.text_color.reset + ("-" * 40), True)
 
         else:
-            console.nice_print(args, console.text_color.reset + ("-" * 40))
+            console.nice_print(args,
+                               console.text_color.reset + ("-" * 40))
 
             match meshbook:
                 case {"group": candidate_target_name}:
@@ -288,13 +292,16 @@ async def main():
                 case {"devices": candidate_target_name}:
                     target_name = str(candidate_target_name)
 
-            console.nice_print(args, console.text_color.yellow + "Executing meshbook on the target(s): " + console.text_color.green + target_name + ".")
+            console.nice_print(args,
+                               console.text_color.yellow + "Executing meshbook on the target(s): " + console.text_color.green + target_name + console.text_color.yellow + ".")
 
             if not args.nograce:
-                console.nice_print(args, console.text_color.yellow + "Initiating grace-period...")
+                console.nice_print(args,
+                                   console.text_color.yellow + "Initiating grace-period...")
 
                 for x in range(grace_period):
-                    console.nice_print(args, console.text_color.yellow + "{}...".format(x+1)) # Countdown!
+                    console.nice_print(args,
+                                       console.text_color.yellow + "{}...".format(x+1)) # Countdown!
                     await asyncio.sleep(1)
 
             console.nice_print(args, console.text_color.reset + ("-" * 40))
@@ -307,7 +314,8 @@ async def main():
         await session.close()
 
     except OSError as message:
-        console.nice_print(args, console.text_color.red + message, True)
+        console.nice_print(args,
+                           console.text_color.red + message, True)
 
 if __name__ == "__main__":
     asyncio.run(main())
