@@ -38,7 +38,7 @@ class executor:
                 response[device]["device_name"] = await transform.translate_nodeid_to_name(device, group_list)
                 task_batch.append(response[device])
 
-            responses_list["Task " + str(round)] = {
+            responses_list["task_" + str(round)] = {
                 "task_name": task["name"],
                 "data": task_batch
             }
