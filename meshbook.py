@@ -153,7 +153,7 @@ async def main():
     parser.add_argument("-mb", "--meshbook", type=str, help="Path to the meshbook yaml file.")
 
     parser.add_argument("-oc", "--oscategories", type=str, help="Path to the Operating System categories JSON file.", default="./os_categories.json")
-    parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./config.conf).", default="./config.conf")
+    parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./config.conf).", default="./api.conf")
     parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the meshbook.", default=False)
     parser.add_argument("-i", "--indent", action="store_true", help="Use an JSON indentation of 4 when this flag is passed.", default=False)
     parser.add_argument("-r", "--raw-result", action="store_true", help="Print the raw result.", default=False)
