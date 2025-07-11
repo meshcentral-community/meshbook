@@ -4,6 +4,7 @@
 import argparse
 import asyncio
 from colorama import just_fix_windows_console
+import pyotp
 import json
 import meshctrl
 
@@ -20,11 +21,22 @@ async def init_connection(credentials: dict) -> meshctrl.Session:
     Use the libmeshctrl library to initiate a Secure Websocket (wss) connection to the MeshCentral instance.
     '''
 
-    session = meshctrl.Session(
-        credentials['hostname'],
-        user=credentials['username'],
-        password=credentials['password']
-    )
+    if configuration["totp_secret"]:
+        totp = pyotp.TOTP(configuration["totp_secret"])
+        otp = totp.now()
+
+        session = meshctrl.Session(
+            configuration['hostname'],
+            user=configuration['username'],
+            password=configuration['password'],
+            token=otp
+        )
+    else:
+        session = meshctrl.Session(
+            configuration['hostname'],
+            user=configuration['username'],
+            password=configuration['password']
+        )
     await session.initialized.wait()
     return session
 
