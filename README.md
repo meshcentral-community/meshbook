@@ -1,207 +1,280 @@
-[![CodeQL Advanced](https://github.com/DaanSelen/meshbook/actions/workflows/codeql.yaml/badge.svg)](https://github.com/DaanSelen/meshbook/actions/workflows/codeql.yaml)
-
-> [!NOTE]
-> *If you experience issues or have suggestions, submit an issue! https://github.com/DaanSelen/meshbook/issues I'll respond ASAP!*
-
 # Meshbook
 
-A way to programmatically manage MeshCentral-managed machines, inspired by applications like [Ansible](https://github.com/ansible/ansible).<br>
-What problem does it solve? Well, what I wanted to be able to do is to automate system updates through [MeshCentral](https://github.com/ylianst/meshcentral). And some machines are behind unmanaged or 3rd party managed firewalls.<br>
-And many people will be comfortable with YAML configurations! It's almost like JSON, but different!<br>
+[![CodeQL Advanced](https://github.com/DaanSelen/meshbook/actions/workflows/codeql.yaml/badge.svg)](https://github.com/DaanSelen/meshbook/actions/workflows/codeql.yaml)
 
-# Quick-start:
+> \[!NOTE]
+> 💬 If you experience issues or have suggestions, [submit an issue](https://github.com/DaanSelen/meshbook/issues) — I'll respond ASAP!
 
-The quickest way to start is to grab a template from the templates folder in this repository.<br>
-Make sure to correctly pass the MeshCentral websocket API as `wss://<MeshCentral-Host>`.<br>
-And make sure to fill in the credentails of an account which has `Remote Commands`, `Details` and `Agent Console` permissions on the targeted devices or groups.<br>
+---
 
-> I did this through a "Service account" with rights on the device group.
+Meshbook is a tool to **programmatically manage MeshCentral-managed machines**, inspired by tools like [Ansible](https://github.com/ansible/ansible).
 
-Then make a yaml with a target and some commands! See below examples as a guideline. And do not forget to look at the bottom's notice.<br>
-To install, follow the following commands:<br>
+## What problem does it solve?
 
-### Linux setup:
+Meshbook is designed to:
+
+* Automate system updates or commands across multiple systems via [MeshCentral](https://github.com/Ylianst/MeshCentral), even behind third-party-managed firewalls.
+* Allow configuration using simple and readable **YAML files** (like Ansible playbooks).
+* Simplify the use of **group-based** or **tag-based** device targeting.
+
+---
+
+## 🏁 Quick Start
+
+### ✅ Prerequisites
+
+* Python 3.7+
+* Git
+* Access to a MeshCentral instance and credentials with:
+
+  * `Remote Commands`
+  * `Details`
+  * `Agent Console` permissions
+
+A service account with access to the relevant device groups is recommended.
+
+---
+
+### 🔧 Installation
+
+#### Linux
 
 ```bash
 git clone https://github.com/daanselen/meshbook
 cd ./meshbook
 python3 -m venv ./venv
 source ./venv/bin/activate
-pip3 install -r ./requirements.txt
+pip install -r requirements.txt
 cp ./templates/meshcentral.conf.template ./meshcentral.conf
 ```
 
-### Windows setup (PowerShell, not cmd):
+#### Windows (PowerShell)
 
-```shell
+```powershell
 git clone https://github.com/daanselen/meshbook
-cd ./meshbook
-python -m venv ./venv # or python3 when done through the Microsoft Store.
-.\venv\Scripts\activate # Make sure to check the terminal prefix.
-pip3 install -r ./requirements.txt
+cd .\meshbook
+python -m venv .\venv
+.\venv\Scripts\activate
+pip install -r .\requirements.txt
 cp .\templates\meshcentral.conf.template .\meshcentral.conf
 ```
 
-Now copy the configuration template from ./templates and fill it in with the correct details (remove .template from the file) this is shown in the last step of the setup(s).<br>
-The url should start with `wss://`.<br>
-You can check pre-made examples in the examples directory, make sure the values are set to your situation.<br>
-After this you can use meshbook, for example:
+> 📌 Rename `meshcentral.conf.template` to `meshcentral.conf` and fill in your actual connection details.
+> The URL must start with `wss://<MeshCentral-Host>`.
 
-### Linux run:
+---
+
+## 🚀 Running Meshbook
+
+Once installed and configured, run a playbook like this:
+
+### Linux:
 
 ```bash
-python3 .\meshbook.py -pb .\examples\echo.yaml
+python3 meshbook.py -pb ./examples/echo_example.yaml
 ```
 
-### Windows run:
+### Windows:
 
-```shell
+```powershell
 .\venv\Scripts\python.exe .\meshbook.py -pb .\examples\echo_example.yaml
 ```
 
-### How to check if everything is okay?
+Use `--help` to explore available command-line options:
 
-The python virtual environment can get messed up, therefore...<br>
-To check if everything is in working order, make sure that the lists from the following commands are aligned:
-
-```
-python3 -m pip list
-pip3 list
+```bash
+python3 meshbook.py --help
 ```
 
-If not, perhaps you are using the wrong executable, the wrong environment and so on...
+---
 
-# How to create a configuration?
+## 🛠️ Creating Configurations
 
-This paragraph explains how the program interprets certain information.
+Meshbook configurations are written in YAML. Below is an overview of supported fields.
 
-### Targeting:
-
-MeshCentral has `meshes` or `groups`, in this program they are called `group(s)`. Because of the way I designed this.<br>
-So to target for example a mesh/group in MeshCentral called: "Nerthus" do:
-
-> If your group has multiple words, then you need to use `"` to group the words.
+### ▶️ Group Targeting
 
 ```yaml
 ---
-name: example configuration
-group: "Nerthus"
-#target_os: "Linux" # <--- according to os_categories.json.
-powershell: True    # <--- this can be important for Windows clients.
+name: My Configuration
+group: "Dev Machines"
+powershell: true
 variables:
-  - name: var1
-    value: "This is the first variable"
+  - name: message
+    value: "Hello from Meshbook"
 tasks:
-  - name: echo the first variable!
-    command: 'echo "{{ var1 }}"'
+  - name: Echo a message
+    command: 'echo "{{ message }}"'
 ```
 
-It is also possible to target a single device, as seen in: [here](./examples/apt_update_example.yaml).<br>
+* `group`: MeshCentral group (aka "mesh"). Quotation marks required for multi-word names.
+* `powershell`: Set `true` for PowerShell commands on Windows clients.
 
-### Variables:
+### ▶️ Device Targeting
 
-Variables are done by replacing the placeholders just before the runtime (the Python program does this, not you).<br>
-So if you have var1 declared, then the value of that declaration is placed wherever it finds {{ var1 }}.<br>
-This is done to imitate popular methods. See below [from the example](./examples/variable_usage_example.yaml).<br>
+You can also target a **specific device** rather than a group. See [`apt_update_example.yaml`](./examples/linux/apt_update_example.yaml) for reference.
 
-### Tasks:
+### ▶️ Variables
 
-The tasks you want to run should be contained under the `tasks:` with two fields, `name` and `command`.<br>
-The name field is for the user of meshbook, to clarify what the following command does in a summary.<br>
-The command field actually gets executed on the end-point.<br>
+Variables are replaced by Meshbook before execution. Syntax:
 
-### Windows Client Extra-information:
+```yaml
+variables:
+  - name: example_var
+    value: "Example value"
 
-If you want to launch commands at Windows machines, make sure you have your `os_categories.conf` up-to-date with the correct reported Windows versions.<br>
-And then make sure to create compatible commands, see: [windows examples](./examples/windows)<br>
-Related is the yaml option: `powershell: True`.
+tasks:
+  - name: Use the variable
+    command: 'echo "{{ example_var }}"'
+```
 
-### Granual Operating System filtering:
+### ▶️ Tasks
 
-I have made the program so it can have a filter with the Operating systems. If you have a mixed group, please read:
-[This explanation](./docs/operating_system_filtering.md)
+Define multiple tasks:
 
-### Tag filtering:
+```yaml
+tasks:
+  - name: Show OS info
+    command: "cat /etc/os-release"
+```
 
-Filtering on MeshCentral tags is also possible with `target_tag` inside the meshbook. This string is case-sensitive, lower- and uppercase must match.<br>
-This is done because its human made and therefor needs to be keps well administrated.
+Each task must include:
 
-# Example:
+* `name`: Description for human readability.
+* `command`: The actual shell or PowerShell command.
 
-For the example, I used the following yaml file (you can find more in [this directory](./examples/)):
+---
 
-The below group: `Dev` has three devices, of which one is offline, Meshbook checks if the device is reachable.<br>
-You can expand the command chain as follows:<br>
+## 🪟 Windows Client Notes
+
+* Keep your `os_categories.json` up to date for proper OS filtering.
+* Ensure Windows commands are compatible (use `powershell: true` if needed).
+* Examples are available in [`examples/windows`](./examples/windows).
+
+---
+
+## 🔎 OS & Tag Filtering
+
+### Filter by OS
+
+You can limit commands to specific OS types:
+
+```yaml
+target_os: "Linux"  # As defined in os_categories.json
+```
+
+See [docs/operating\_system\_filtering.md](./docs/operating_system_filtering.md) for details.
+
+### Filter by Tag
+
+You can also filter using MeshCentral tags:
+
+```yaml
+target_tag: "Production"
+```
+
+> ⚠️ Tag values are **case-sensitive**.
+
+---
+
+## 📋 Example Playbook
 
 ```yaml
 ---
-name: Echo a string to the terminal through the meshbook example.
+name: Echo OS Info
 group: "Dev"
-#target_os: "Linux" # <--- according to os_categories.json
+target_os: "Linux"
 variables:
   - name: file
     value: "/etc/os-release"
 tasks:
-  - name: Echo!
+  - name: Show contents of os-release
     command: "echo $(cat {{ file }})"
 ```
 
-The following response it received when executing the first yaml of the above files (without the `-s` parameters, which just outputs the below JSON).
+Sample output:
 
-```shell
-$ python3 meshbook.py -mb books/aggregate_example.yaml -i --nograce -pr
-
-----------------------------------------
-meshbook: books/aggregate_example.yaml
-Operating System Categorisation file: ./os_categories.json
-Configuration file: ./config.conf
-Target Operating System category given: Linux
-Target group: Systemec Development
-Grace: False
-Silent: False
-----------------------------------------
-Trying to load the MeshCentral account credential file...
-Trying to load the meshbook yaml file and compile it into something workable...
-Trying to load the Operating System categorisation JSON file...
-Connecting to MeshCentral and establish a session using variables from previous credential file.
-Generating group list with nodes and reference the targets from that.
-----------------------------------------
-Executing playbook on the target(s): Development.
-----------------------------------------
-1. Running: Ping!
-----------------------------------------
+```json
 {
   "Task 1": {
-    "task_name": "Ping Quad9 DNS",
+    "task_name": "Show contents of os-release",
     "data": [
-        {
-            "complete": true,
-            "result": [
-                "PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.",
-                "64 bytes from 9.9.9.9: icmp_seq=1 ttl=61 time=26.8 ms",
-                "--- 9.9.9.9 ping statistics ---",
-                "1 packets transmitted, 1 received, 0% packet loss, time 0ms",
-                "rtt min/avg/max/mdev = 26.809/26.809/26.809/0.000 ms"
-            ],
-            "command": "ping 9.9.9.9 -c 1",
-            "device_id": "yourn nodeip",
-            "device_name": "yournodename"
-        }
+      {
+        "command": "echo $(cat /etc/os-release)",
+        "result": [
+          "NAME=\"Ubuntu\"",
+          "VERSION=\"22.04.4 LTS (Jammy Jellyfish)\""
+        ],
+        "complete": true,
+        "device_name": "dev-host1"
+      }
     ]
   }
 }
 ```
-The above without `-s` is quite verbose. use `--help` to read about parameters and getting a minimal response for example.
 
-# Important Notice:
+---
 
-If you want to use this, make sure to use `NON-BLOCKING` commands. MeshCentral does not work if you send it commands that wait.<br>
-A couple examples of `BLOCKING COMMANDS` which will never get back to the main MeshCentral server, and Meshbook will quit after the timeout but the agent will not come back:
+## ⚠️ Blocking Commands Warning
 
-```shell
-apt upgrade # without -y.
+Avoid using commands that **block indefinitely** — MeshCentral requires **non-blocking** execution.
 
+🚫 Examples of bad (blocking) commands:
+
+```bash
+apt upgrade       # Without -y
 sleep infinity
-
-ping 1.1.1.1 # without a -c flag (because it pings forever).
+ping 1.1.1.1      # Without -c
 ```
+
+✅ Use instead:
+
+```bash
+apt upgrade -y
+ping 1.1.1.1 -c 1
+```
+
+---
+
+## 🧪 Check Python Environment
+
+Sometimes the wrong Python interpreter or environment is used. To verify:
+
+```bash
+python3 -m pip list
+pip3 list
+```
+
+The lists should match. If not, make sure the correct environment is activated.
+
+---
+
+## 📂 Project Structure (excerpt)
+
+```bash
+meshbook/
+├── books/
+│   ├── apt-update.yaml
+│   └── rdp.yaml
+├── examples/
+│   ├── linux/
+│   │   ├── apt_update_example.yaml
+│   │   └── ...
+│   └── windows/
+│       ├── get_sys_info.yaml
+│       └── ...
+├── modules/
+│   ├── executor.py
+│   └── utilities.py
+├── meshbook.py
+├── os_categories.json
+├── requirements.txt
+├── templates/
+│   └── config.conf.template
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the terms of the MIT License. See [LICENSE](./LICENSE).
