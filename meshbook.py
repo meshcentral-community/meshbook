@@ -21,21 +21,21 @@ async def init_connection(credentials: dict) -> meshctrl.Session:
     Use the libmeshctrl library to initiate a Secure Websocket (wss) connection to the MeshCentral instance.
     '''
 
-    if configuration["totp_secret"]:
-        totp = pyotp.TOTP(configuration["totp_secret"])
+    if "totp_secret" in credentials:
+        totp = pyotp.TOTP(credentials["totp_secret"])
         otp = totp.now()
 
         session = meshctrl.Session(
-            configuration['hostname'],
-            user=configuration['username'],
-            password=configuration['password'],
+            credentials['hostname'],
+            user=credentials['username'],
+            password=credentials['password'],
             token=otp
         )
     else:
         session = meshctrl.Session(
-            configuration['hostname'],
-            user=configuration['username'],
-            password=configuration['password']
+            credentials['hostname'],
+            user=credentials['username'],
+            password=credentials['password']
         )
     await session.initialized.wait()
     return session
@@ -181,7 +181,7 @@ async def main():
         console.nice_print(args,
                            console.text_color.reset + "MeshBook Version: " + console.text_color.yellow + str(meshbook_version))
         return
-    
+
     if not args.meshbook:
         parser.print_help()
         return
@@ -216,7 +216,7 @@ async def main():
         else:
             console.nice_print(args,
                                "Target Operating System category given: " + console.text_color.yellow + "All" + console.text_color.reset + ".")
-            
+
         # Should Meshbook ignore categorisation?
         if "ignore_categorisation" in meshbook:
             console.nice_print(args,
@@ -230,7 +230,7 @@ async def main():
         else:
             console.nice_print(args,
                                 "Ignore the OS Categorisation file: " + console.text_color.yellow + "False" + console.text_color.reset + ".")
-        
+
         # TARGET TAG PRINTING
         if "target_tag" in meshbook:
             console.nice_print(args,
