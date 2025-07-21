@@ -2,3 +2,4 @@
 hostname =
 username = 
 password =
+totp_secret =
