@@ -13,7 +13,7 @@ from modules.console import *
 from modules.executor import *
 from modules.utilities import *
 
-meshbook_version = 1.3
+meshbook_version = "1.3.1"
 grace_period = 3 # Grace period will last for x (by default 3) second(s).
 
 async def init_connection(credentials: dict) -> meshctrl.Session:
@@ -166,7 +166,9 @@ async def main():
 
     parser.add_argument("-oc", "--oscategories", type=str, help="Path to the Operating System categories JSON file.", default="./os_categories.json")
     parser.add_argument("--conf", type=str, help="Path for the API configuration file (default: ./config.conf).", default="./api.conf")
-    parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the meshbook.", default=False)
+    parser.add_argument("--nograce", action="store_true", help="Disable the grace 3 seconds before running the meshbook.")
+    parser.add_argument("-g", "--group", type=str, help="Specify a manual override for the group.", default="")
+    parser.add_argument("-d", "--device", type=str, help="Specify a manual override for a device", default="")
     parser.add_argument("-i", "--indent", action="store_true", help="Use an JSON indentation of 4 when this flag is passed.", default=False)
     parser.add_argument("-r", "--raw-result", action="store_true", help="Print the raw result.", default=False)
     parser.add_argument("-s", "--silent", action="store_true", help="Suppress terminal output.", default=False)
@@ -194,6 +196,13 @@ async def main():
             (utilities.load_config(args)),
             (utilities.compile_book(args.meshbook))
         )
+
+        if args.group != "":
+            meshbook["group"] = args.group
+            del meshbook["device"]
+        elif args.device != "":
+            meshbook["device"] = args.device
+            del meshbook["group"]
 
         '''
         The following section mainly displays used variables and first steps of the program to the console.
