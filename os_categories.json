@@ -2,6 +2,7 @@
 {
     "Linux": {
         "Debian": [
+            "Debian GNU/Linux 13 (trixie)",
             "Debian GNU/Linux 12 (bookworm)",
             "Debian GNU/Linux 11 (bullseye)"
         ],
