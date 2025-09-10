@@ -92,7 +92,7 @@ python3 meshbook.py --help
 
 Meshbook configurations are written in YAML. Below is an overview of supported fields.
 
-### ▶️ Group Targeting
+### ▶️ Group Targeting (Primary*)
 
 ```yaml
 ---
@@ -110,7 +110,7 @@ tasks:
 * `group`: MeshCentral group (aka "mesh"). Quotation marks required for multi-word names.
 * `powershell`: Set `true` for PowerShell commands on Windows clients.
 
-### ▶️ Device Targeting
+### ▶️ Device Targeting (Secondary*)
 
 You can also target a **specific device** rather than a group. See [`apt_update_example.yaml`](./examples/linux/apt_update_example.yaml) for reference.
 
@@ -127,6 +127,8 @@ tasks:
   - name: Use the variable
     command: 'echo "{{ example_var }}"'
 ```
+
+* Primary and Secondary mark the order in which will take prescendence
 
 ### ▶️ Tasks
 

@@ -109,25 +109,37 @@ class utilities:
             "offline_devices": offline_devices
         }
 
-    async def process_device_or_group(pseudo_target: str,
-                                      group_list: dict,
-                                      os_categories: dict,
-                                      target_os: str,
-                                      ignore_categorisation: bool,
-                                      target_tag: str) -> dict:
-        '''
-        Helper function to process devices or groups.
-        '''
-
+    async def process_device(device: str,
+                            group_list: dict,
+                            os_categories: dict,
+                            target_os: str,
+                            ignore_categorisation: bool,
+                            target_tag: str,
+                            add_processed_devices=None) -> dict:
+        """
+        Processes a single device or pseudo-target against group_list,
+        filters matches by OS and tags, and adds processed devices.
+        """
         matched_devices = []
-        for group in group_list:
-            for device in group_list[group]:
-                if device["device_name"] == pseudo_target:
-                    matched_devices.append(device)
+        pseudo_target = device.lower()
 
+        # Find devices that match the pseudo_target
+        for group in group_list:
+            for dev in group_list[group]:
+                if dev["device_name"].lower() == pseudo_target:
+                    matched_devices.append(dev)
+
+        # If matches found, filter them and add processed devices
         if matched_devices:
-            return await utilities.filter_targets(matched_devices, os_categories, target_os, ignore_categorisation, target_tag)
-        return []
+            processed = await utilities.filter_targets(
+                matched_devices, os_categories, target_os, ignore_categorisation, target_tag
+            )
+            if add_processed_devices:
+                await add_processed_devices(processed)
+            return processed
+
+        # No matches found
+        return {"valid_devices": [], "offline_devices": []}
 
 import shlex
 class transform:
