@@ -277,4 +277,4 @@ meshbook/
 
 ## 📄 License
 
-This project is licensed under the terms of the MIT License. See [LICENSE](./LICENSE).
+This project is licensed under the terms of the GPL3 License. See [LICENSE](./LICENSE).
