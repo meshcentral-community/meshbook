@@ -8,7 +8,7 @@ from time import sleep
 from modules.console import console
 from modules.utilities import transform
 
-intertask_delay = 0.5
+intertask_delay = 1
 
 class executor:
     async def execute_meshbook(args: argparse.Namespace, session: meshctrl.Session, compiled_device_list: dict, meshbook: dict, group_list: dict) -> None:
