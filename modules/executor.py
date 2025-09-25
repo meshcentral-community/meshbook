@@ -11,6 +11,7 @@ from modules.utilities import transform
 intertask_delay = 1
 
 class executor:
+    @staticmethod
     async def execute_meshbook(args: argparse.Namespace, session: meshctrl.Session, compiled_device_list: dict, meshbook: dict, group_list: dict) -> None:
         '''
         Actual function that handles meshbook execution, also responsible for formatting the resulting JSON.
@@ -28,7 +29,7 @@ class executor:
             if "powershell" in meshbook and meshbook["powershell"]:
                 response = await session.run_command(nodeids=targets, command=task["command"],powershell=True,ignore_output=False,timeout=900)
             else:
-                response = await session.run_command(nodeids=targets, command=task["command"],ignore_output=False,timeout=900)
+                response = await session.run_command(nodeids=targets, command=task["command"],powershell=False,ignore_output=False,timeout=900)
 
             task_batch = []
             for device in response:

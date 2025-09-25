@@ -10,6 +10,7 @@ Creation and compilation of the MeshCentral nodes list (list of all nodes availa
 '''
 
 class utilities:
+    @staticmethod
     async def load_config(args: argparse.Namespace,
                           segment: str = 'meshcentral-account') -> dict:
         '''
@@ -32,17 +33,20 @@ class utilities:
             print(f'Segment "{segment}" not found in config file {conf_file}.')
             os._exit(1)
 
-        return config[segment]
+        return dict(config[segment])
 
-    async def compile_book(meshbook_file: dict) -> dict:
+    @staticmethod
+    async def compile_book(meshbook_file: str) -> dict:
         '''
         Simple function that opens the file and replaces placeholders through the next function. After that just return it.
         '''
 
-        meshbook = open(meshbook_file, 'r')
+        with open(meshbook_file, 'r') as f:
+            meshbook = f.read()
         meshbook = await transform.replace_placeholders(yaml.safe_load(meshbook))
         return meshbook
     
+    @staticmethod
     def get_os_variants(target_category: str,
                         os_map: dict) -> set:
         '''
@@ -65,17 +69,19 @@ class utilities:
 
         return set()
 
+    @staticmethod
     async def filter_targets(devices: list[dict],
                              os_categories: dict,
-                             target_os: str = None,
+                             target_os: str = "",
                              ignore_categorisation: bool = False,
-                             target_tag: str = None) -> dict:
+                             target_tag: str = "") -> dict:
         '''
         Filters devices based on reachability and optional OS criteria, supporting nested OS categories.
         '''
 
         valid_devices = []
         offline_devices = []
+        allowed_os = set()
 
         # Identify correct OS filtering scope
         for key in os_categories:
@@ -109,6 +115,7 @@ class utilities:
             "offline_devices": offline_devices
         }
 
+    @staticmethod
     async def process_device(device: str,
                             group_list: dict,
                             os_categories: dict,
@@ -143,6 +150,7 @@ class utilities:
 
 import shlex
 class transform:
+    @staticmethod
     def process_shell_response(shlex_enable: bool, meshbook_result: dict) -> dict:
         for task_name, task_data in meshbook_result.items():
             if task_name == "Offline": # Failsafe
@@ -164,6 +172,7 @@ class transform:
                 node_responses["result"] = clean_output
         return meshbook_result
 
+    @staticmethod
     async def translate_nodeid_to_name(target_id: str, group_list: dict) -> str:
         '''
         Simple function that looks up nodeid to the human-readable name if existent - otherwise return None.
@@ -173,8 +182,9 @@ class transform:
             for device in group_list[group]:
                 if device["device_id"] == target_id:
                     return device["device_name"]
-        return None
+        return ""
     
+    @staticmethod
     async def replace_placeholders(meshbook: dict) -> dict:
         '''
         Replace the placeholders in both name and command fields of the tasks. According to the variables defined in the variables list.
@@ -208,6 +218,7 @@ class transform:
 
         return meshbook
     
+    @staticmethod
     async def compile_group_list(session: meshctrl.Session) -> dict:
         '''
         Function that retrieves the devices from MeshCentral and compiles it into a efficient list.

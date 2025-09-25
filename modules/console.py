@@ -14,6 +14,7 @@ class console:
             italic = "\x1B[3m"
             reset = "\x1B[0m"
 
+    @staticmethod
     def nice_print(args: argparse.Namespace, message: str, final: bool=False):
         '''
         Helper function for terminal output, with a couple variables for the silent flag. Also clears terminal color each time.

@@ -53,8 +53,11 @@ async def gather_targets(args: argparse.Namespace,
     offline_list = []
 
     target_os = meshbook.get("target_os")
-    ignore_categorisation = meshbook.get("ignore_categorisation", False)
     target_tag = meshbook.get("target_tag")
+    ignore_categorisation = meshbook.get("ignore_categorisation", False)
+
+    assert target_os is not None, "target_os must be provided"
+    assert target_tag is not None, "target_tag must be provided"
 
     async def add_processed_devices(processed):
         """Helper to update target and offline lists."""
@@ -119,7 +122,7 @@ async def gather_targets(args: argparse.Namespace,
             elif isinstance(pseudo_target, str) and pseudo_target.lower() == "all":
                 for group in group_list.values():
                     await process_group_helper(group)
-            elif isintance(pseudo_target, str):
+            elif isinstance(pseudo_target, str):
                 console.nice_print(
                     args,
                     console.text_color.yellow + "The 'groups' key is being used, but only one string is given. Did you mean 'group'?",
@@ -303,7 +306,7 @@ async def main():
         group_list = await transform.compile_group_list(session)
         compiled_device_list = await gather_targets(args, meshbook, group_list, os_categories)
 
-        if len(compiled_device_list["target_list"]) == 0:
+        if "target_list" not in compiled_device_list or len(compiled_device_list["target_list"]) == 0:
             console.nice_print(args,
                                console.text_color.red + "No targets found or targets unreachable, quitting.", True)
 
@@ -326,6 +329,10 @@ async def main():
 
                 case {"devices": candidate_target_name}:
                     target_name = str(candidate_target_name)
+
+                case _:
+                    target_name = ""
+
 
             console.nice_print(args,
                                console.text_color.yellow + "Executing meshbook on the target(s): " + console.text_color.green + target_name + console.text_color.yellow + ".")
@@ -350,7 +357,7 @@ async def main():
 
     except OSError as message:
         console.nice_print(args,
-                           console.text_color.red + message, True)
+                           console.text_color.red + f'{message}', True)
 
 if __name__ == "__main__":
     asyncio.run(main())
