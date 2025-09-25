@@ -72,8 +72,7 @@ async def gather_targets(args: argparse.Namespace,
             os_categories,
             target_os,
             ignore_categorisation,
-            target_tag,
-            add_processed_devices
+            target_tag
         )
         await add_processed_devices(processed)
 

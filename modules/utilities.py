@@ -121,8 +121,7 @@ class utilities:
                             os_categories: dict,
                             target_os: str,
                             ignore_categorisation: bool,
-                            target_tag: str,
-                            add_processed_devices=None) -> dict:
+                            target_tag: str) -> dict:
         """
         Processes a single device or pseudo-target against group_list,
         filters matches by OS and tags, and adds processed devices.
@@ -141,8 +140,6 @@ class utilities:
             processed = await utilities.filter_targets(
                 matched_devices, os_categories, target_os, ignore_categorisation, target_tag
             )
-            if add_processed_devices:
-                await add_processed_devices(processed)
             return processed
 
         # No matches found
