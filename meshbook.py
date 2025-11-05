@@ -56,9 +56,6 @@ async def gather_targets(args: argparse.Namespace,
     target_tag = meshbook.get("target_tag")
     ignore_categorisation = meshbook.get("ignore_categorisation", False)
 
-    assert target_os is not None, "target_os must be provided"
-    assert target_tag is not None, "target_tag must be provided"
-
     async def add_processed_devices(processed):
         """Helper to update target and offline lists."""
         if processed:
