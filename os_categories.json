@@ -4,7 +4,8 @@
         "Debian": [
             "Debian GNU/Linux 13 (trixie)",
             "Debian GNU/Linux 12 (bookworm)",
-            "Debian GNU/Linux 11 (bullseye)"
+            "Debian GNU/Linux 11 (bullseye)",
+            "Debian GNU/Linux 10 (buster)"
         ],
         "Ubuntu": [
             "Ubuntu 24.04.1 LTS",
