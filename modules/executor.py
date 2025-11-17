@@ -16,7 +16,7 @@ class executor:
         '''
         Actual function that handles meshbook execution, also responsible for formatting the resulting JSON.
         '''
-            
+
         responses_list = {}
         targets = compiled_device_list["target_list"]
         offline = compiled_device_list["offline_list"]
@@ -27,9 +27,9 @@ class executor:
                                console.text_color.green + str(round) + ". Running: " + task["name"])
 
             if "powershell" in meshbook and meshbook["powershell"]:
-                response = await session.run_command(nodeids=targets, command=task["command"],powershell=True,ignore_output=False,timeout=900)
+                response = await session.run_command(nodeids=targets, command=task["command"],powershell=True,ignore_output=False,timeout=1800)
             else:
-                response = await session.run_command(nodeids=targets, command=task["command"],powershell=False,ignore_output=False,timeout=900)
+                response = await session.run_command(nodeids=targets, command=task["command"],powershell=False,ignore_output=False,timeout=1800)
 
             task_batch = []
             for device in response:
