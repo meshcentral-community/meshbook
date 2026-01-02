@@ -189,7 +189,7 @@ async def main():
         '''
 
         group_list = await Transform.compile_group_list(session)
-        compiled_device_list = await Utilities.gather_targets(args, meshbook, group_list, os_categories)
+        compiled_device_list = await Utilities.gather_targets(args.silent, meshbook, group_list, os_categories)
 
         # Check if we have reachable targets on the MeshCentral host
         if "target_list" not in compiled_device_list or len(compiled_device_list["target_list"]) == 0:

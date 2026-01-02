@@ -6,6 +6,8 @@ import os
 import shlex
 import yaml
 
+from modules.console import Console
+
 '''
 Creation and compilation of the MeshCentral nodes list (list of all nodes available to the user in the configuration) is handled in the following section.
 '''
@@ -48,7 +50,7 @@ class Utilities:
         return meshbook
 
     @staticmethod
-    async def gather_targets(args: argparse.Namespace,
+    async def gather_targets(silent: bool,
                             meshbook: dict,
                             group_list: dict[str, list[dict]],
                             os_categories: dict) -> dict:
@@ -99,19 +101,19 @@ class Utilities:
                         await process_group_helper(group_list[pseudo_target])
 
                     elif pseudo_target not in group_list:
-                        console.nice_print(
-                            args,
-                            console.text_color.yellow + "Targeted group not found on the MeshCentral server."
+                        Console.print_text(
+                            silent,
+                            Console.text_color.yellow + "Targeted group not found on the MeshCentral server."
                         )
                 elif isinstance(pseudo_target, list):
-                    console.nice_print(
-                        args,
-                        console.text_color.yellow + "Please use groups (Notice the plural with 'S') for multiple groups."
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "Please use groups (Notice the plural with 'S') for multiple groups."
                     )
                 else:
-                    console.nice_print(
-                        args,
-                        console.text_color.yellow + "The 'group' key is being used, but an unknown data type was found, please check your values."
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "The 'group' key is being used, but an unknown data type was found, please check your values."
                     )
 
             case {"groups": pseudo_target}:
@@ -124,28 +126,28 @@ class Utilities:
                     for group in group_list.values():
                         await process_group_helper(group)
                 elif isinstance(pseudo_target, str):
-                    console.nice_print(
-                        args,
-                        console.text_color.yellow + "The 'groups' key is being used, but only one string is given. Did you mean 'group'?"
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "The 'groups' key is being used, but only one string is given. Did you mean 'group'?"
                     )
                 else:
-                    console.nice_print(
-                        args,
-                        console.text_color.yellow + "The 'groups' key is being used, but an unknown data type was found, please check your values."
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "The 'groups' key is being used, but an unknown data type was found, please check your values."
                     )
 
             case {"device": pseudo_target}:
                 if isinstance(pseudo_target, str):
                     await process_device_helper(pseudo_target)
                 elif isinstance(pseudo_target, list):
-                    console.nice_print(
-                        args,
-                        console.text_color.yellow + "Please use devices (Notice the plural with 'S') for multiple devices."
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "Please use devices (Notice the plural with 'S') for multiple devices."
                     )
                 else:
-                    console.nice_print(
-                        args,
-                        console.text_color.yellow + "The 'device' key is being used, but an unknown data type was found, please check your values."
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "The 'device' key is being used, but an unknown data type was found, please check your values."
                     )
 
             case {"devices": pseudo_target}:
@@ -153,14 +155,14 @@ class Utilities:
                     for sub_device in pseudo_target:
                         await process_device_helper(sub_device)
                 elif isinstance(pseudo_target, str):
-                    console.nice_print(
-                        args,
-                        console.text_color.yellow + "The 'devices' key is being used, but only one string is given. Did you mean 'device'?"
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "The 'devices' key is being used, but only one string is given. Did you mean 'device'?"
                     )
                 else:
-                    console.nice_print(
-                        args,
-                        console.text_color.yellow + "The 'devices' key is being used, but an unknown data type was found, please check your values."
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "The 'devices' key is being used, but an unknown data type was found, please check your values."
                     )
 
         return {"target_list": target_list, "offline_list": offline_list}
