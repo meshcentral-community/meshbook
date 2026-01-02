@@ -117,7 +117,12 @@ class Utilities:
                     )
 
             case {"groups": pseudo_target}:
-                if isinstance(pseudo_target, list):
+                if isinstance(pseudo_target, str) or (isinstance(pseudo_target, list) and len(pseudo_target) == 1):
+                    Console.print_text(
+                        silent,
+                        Console.text_color.yellow + "The 'groups' key is being used, but only one group seems to be given. Did you mean 'group'?"
+                    )
+                elif isinstance(pseudo_target, list):
                     for sub_group in pseudo_target:
                         sub_group = sub_group.lower()
                         if sub_group in group_list:
@@ -125,11 +130,6 @@ class Utilities:
                 elif isinstance(pseudo_target, str) and pseudo_target.lower() == "all":
                     for group in group_list.values():
                         await process_group_helper(group)
-                elif isinstance(pseudo_target, str):
-                    Console.print_text(
-                        silent,
-                        Console.text_color.yellow + "The 'groups' key is being used, but only one string is given. Did you mean 'group'?"
-                    )
                 else:
                     Console.print_text(
                         silent,
@@ -151,14 +151,14 @@ class Utilities:
                     )
 
             case {"devices": pseudo_target}:
-                if isinstance(pseudo_target, list):
-                    for sub_device in pseudo_target:
-                        await process_device_helper(sub_device)
-                elif isinstance(pseudo_target, str):
+                if isinstance(pseudo_target, str) or (isinstance(pseudo_target, list) and len(pseudo_target) == 1):
                     Console.print_text(
                         silent,
-                        Console.text_color.yellow + "The 'devices' key is being used, but only one string is given. Did you mean 'device'?"
+                        Console.text_color.yellow + "The 'devices' key is being used, but only one device seems to be given. Did you mean 'device'?"
                     )
+                elif isinstance(pseudo_target, list):
+                    for sub_device in pseudo_target:
+                        await process_device_helper(sub_device)
                 else:
                     Console.print_text(
                         silent,

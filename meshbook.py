@@ -259,17 +259,21 @@ async def main():
             Console.print_text(args.silent, "Writing to file...")
             history.write_history(formatted_history)
 
-        await session.close()
-
     except OSError as message:
-        Console.print_text(args.silent,
-                           Console.text_color.red + f'{message}')
+        Console.print_text(
+            args.silent,
+            Console.text_color.red + f'{message}'
+        )
 
     except asyncio.CancelledError:
-        Console.print_text(args.silent,
-                           Console.text_color.red + "Received SIGINT, Aborting - (Tasks may still be running on targets).")
-        await session.close()
+        Console.print_text(
+            args.silent,
+            Console.text_color.red + "Received SIGINT, Aborting - (Tasks may still be running on targets)."
+        )
         raise
+
+    finally:
+        await session.close()
 
 if __name__ == "__main__":
     try:
