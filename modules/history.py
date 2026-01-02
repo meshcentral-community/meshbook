@@ -45,4 +45,4 @@ class History():
         stitched_file = f"{self.history_directory}/meshbook_run_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}.log"
 
         with open(stitched_file, "x") as f:
-            f.write(history)
+            f.write(history + "\n")
