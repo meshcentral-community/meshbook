@@ -166,8 +166,8 @@ async def main():
                                "Target groups: " + Console.text_color.yellow + str(meshbook["groups"]) + Console.text_color.reset + ".")
 
         # RUNNING PARAMETERS PRINTING
-        Console.print_text(args.silent, "Grace: " + Console.text_color.yellow + str((not args.nograce))) # Negation of bool for correct explanation
-        Console.print_text(args.silent, "Silent: " + Console.text_color.yellow + "False") # Can be pre-defined because if silent flag was passed then none of this would be printed.
+        Console.print_text(args.silent, "Grace: " + Console.text_color.yellow + str(not args.nograce) + Console.text_color.reset + ".") # Negation of bool for correct explanation
+        Console.print_text(args.silent, "Silent: " + Console.text_color.yellow + "False" + Console.text_color.reset + ".") # Can be pre-defined because if silent flag was passed then none of this would be printed.
 
         session = await init_connection(credentials)
 
