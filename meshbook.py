@@ -102,13 +102,15 @@ async def main():
         if args.group != "":
             meshbook["group"] = args.group
             if "device" in meshbook:
-              del meshbook["device"]
-              del meshbook["devices"]
+                del meshbook["device"]
+            if "devices" in meshbook:
+                del meshbook["devices"]
         elif args.device != "":
             meshbook["device"] = args.device
             if "group" in meshbook:
-              del meshbook["group"]
-              del meshbook["groups"]
+                del meshbook["group"]
+            if "groups" in meshbook:
+                del meshbook["groups"]
 
         '''
         The following section mainly displays used variables and first steps of the program to the Console.
