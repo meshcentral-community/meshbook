@@ -5,7 +5,7 @@
 > \[!NOTE]
 > 💬 If you experience issues or have suggestions, [submit an issue](https://github.com/DaanSelen/meshbook/issues) — I'll respond ASAP!
 
----
+
 
 Meshbook is a tool to **programmatically manage MeshCentral-managed machines**, inspired by tools like [Ansible](https://github.com/ansible/ansible).
 
@@ -17,14 +17,13 @@ Meshbook is designed to:
 * Allow configuration using simple and readable **YAML files** (like Ansible playbooks).
 * Simplify the use of **group-based** or **tag-based** device targeting.
 
----
+
 
 ## 🏁 Quick Start
 
 ### ✅ Prerequisites
 
-* Python 3.7+
-* Git
+* Python 3
 * Access to a MeshCentral instance and credentials with:
 
   * `Remote Commands`
@@ -32,8 +31,6 @@ Meshbook is designed to:
   * `Agent Console` permissions
 
 A service account with access to the relevant device groups is recommended.
-
----
 
 ### 🔧 Installation
 
@@ -62,7 +59,7 @@ cp .\templates\meshcentral.conf.template .\meshcentral.conf
 > 📌 Rename `meshcentral.conf.template` to `meshcentral.conf` and fill in your actual connection details.
 > The URL must start with `wss://<MeshCentral-Host>`.
 
----
+
 
 ## 🚀 Running Meshbook
 
@@ -86,7 +83,7 @@ Use `--help` to explore available command-line options:
 python3 meshbook.py --help
 ```
 
----
+
 
 ## 🛠️ Creating Configurations
 
@@ -95,7 +92,7 @@ Meshbook configurations are written in YAML. Below is an overview of supported f
 ### ▶️ Group Targeting (Primary*)
 
 ```yaml
----
+
 name: My Configuration
 group: "Dev Machines"
 powershell: true
@@ -145,7 +142,7 @@ Each task must include:
 * `name`: Description for human readability.
 * `command`: The actual shell or PowerShell command.
 
----
+
 
 ## 🪟 Windows Client Notes
 
@@ -153,7 +150,7 @@ Each task must include:
 * Ensure Windows commands are compatible (use `powershell: true` if needed).
 * Examples are available in [`examples/windows`](./examples/windows).
 
----
+
 
 ## 🔎 OS & Tag Filtering
 
@@ -177,12 +174,12 @@ target_tag: "Production"
 
 > ⚠️ Tag values are **case-sensitive**.
 
----
+
 
 ## 📋 Example Playbook
 
 ```yaml
----
+
 name: Echo OS Info
 group: "Dev"
 target_os: "Linux"
@@ -215,7 +212,7 @@ Sample output:
 }
 ```
 
----
+
 
 ## ⚠️ Blocking Commands Warning
 
@@ -236,7 +233,7 @@ apt upgrade -y
 ping 1.1.1.1 -c 1
 ```
 
----
+
 
 ## 🧪 Check Python Environment
 
@@ -249,7 +246,7 @@ pip3 list
 
 The lists should match. If not, make sure the correct environment is activated.
 
----
+
 
 ## 📂 Project Structure (excerpt)
 
@@ -275,7 +272,7 @@ meshbook/
 │   └── config.conf.template
 ```
 
----
+
 
 ## 📄 License
 

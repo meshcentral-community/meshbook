@@ -2,6 +2,7 @@
 venv
 books
 .vscode
+important/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
