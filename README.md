@@ -61,9 +61,6 @@ cp .\templates\api.conf.template .\api.conf
 Also here, make sure to fill in the `./api.conf` file.
 
 
-> 📌 Rename `api.conf.template` to `api.conf` and fill in your actual connection details.
-> The URL must start with `wss://<MeshCentral-Host>`.
-
 > [!CAUTION]
 > Meshbook will not work without a properly filled in `api.conf` file.
 
