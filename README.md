@@ -2,7 +2,7 @@
 
 [![CodeQL Advanced](https://github.com/DaanSelen/meshbook/actions/workflows/codeql.yaml/badge.svg)](https://github.com/DaanSelen/meshbook/actions/workflows/codeql.yaml)
 
-> \[!NOTE]
+> [!NOTE]
 > 💬 If you experience issues or have suggestions, [submit an issue](https://github.com/DaanSelen/meshbook/issues) — I'll respond ASAP!
 
 Meshbook is a tool to **programmatically manage MeshCentral-managed machines**, inspired by tools like [Ansible](https://github.com/ansible/ansible).
@@ -65,7 +65,7 @@ Also here, make sure to fill in the `./api.conf` file.
 > The URL must start with `wss://<MeshCentral-Host>`.
 
 > [!CAUTION]
-> Negative potential consequences of an action.
+> Meshbook will not work without a properly filled in `api.conf` file.
 
 ## 🚀 Running Meshbook
 
