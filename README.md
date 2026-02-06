@@ -5,8 +5,6 @@
 > \[!NOTE]
 > 💬 If you experience issues or have suggestions, [submit an issue](https://github.com/DaanSelen/meshbook/issues) — I'll respond ASAP!
 
-
-
 Meshbook is a tool to **programmatically manage MeshCentral-managed machines**, inspired by tools like [Ansible](https://github.com/ansible/ansible).
 
 ## What problem does it solve?
@@ -16,8 +14,6 @@ Meshbook is designed to:
 * Automate system updates or commands across multiple systems via [MeshCentral](https://github.com/Ylianst/MeshCentral), even behind third-party-managed firewalls.
 * Allow configuration using simple and readable **YAML files** (like Ansible playbooks).
 * Simplify the use of **group-based** or **tag-based** device targeting.
-
-
 
 ## 🏁 Quick Start
 
@@ -68,7 +64,8 @@ Also here, make sure to fill in the `./api.conf` file.
 > 📌 Rename `api.conf.template` to `api.conf` and fill in your actual connection details.
 > The URL must start with `wss://<MeshCentral-Host>`.
 
-
+> [!CAUTION]
+> Negative potential consequences of an action.
 
 ## 🚀 Running Meshbook
 
@@ -91,8 +88,6 @@ Use `--help` to explore available command-line options:
 ```bash
 python3 meshbook.py --help
 ```
-
-
 
 ## 🛠️ Creating Configurations
 
