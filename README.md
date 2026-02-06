@@ -42,7 +42,13 @@ cd ./meshbook
 python3 -m venv ./venv
 source ./venv/bin/activate
 pip install -r requirements.txt
-cp ./templates/meshcentral.conf.template ./meshcentral.conf
+cp ./templates/api.conf.template ./api.conf
+```
+
+Next, make sure to fill in the following file:
+
+```
+nano ./api.conf
 ```
 
 #### Windows (PowerShell)
@@ -53,10 +59,13 @@ cd .\meshbook
 python -m venv .\venv
 .\venv\Scripts\activate
 pip install -r .\requirements.txt
-cp .\templates\meshcentral.conf.template .\meshcentral.conf
+cp .\templates\api.conf.template .\api.conf
 ```
 
-> 📌 Rename `meshcentral.conf.template` to `meshcentral.conf` and fill in your actual connection details.
+Also here, make sure to fill in the `./api.conf` file.
+
+
+> 📌 Rename `api.conf.template` to `api.conf` and fill in your actual connection details.
 > The URL must start with `wss://<MeshCentral-Host>`.
 
 
@@ -68,13 +77,13 @@ Once installed and configured, run a playbook like this:
 ### Linux:
 
 ```bash
-python3 meshbook.py -pb ./examples/echo_example.yaml
+python3 meshbook.py -mb ./examples/echo_example.yaml
 ```
 
 ### Windows:
 
 ```powershell
-.\venv\Scripts\python.exe .\meshbook.py -pb .\examples\echo_example.yaml
+.\venv\Scripts\python.exe .\meshbook.py -mb .\examples\echo_example.yaml
 ```
 
 Use `--help` to explore available command-line options:
@@ -174,8 +183,6 @@ target_tag: "Production"
 
 > ⚠️ Tag values are **case-sensitive**.
 
-
-
 ## 📋 Example Playbook
 
 ```yaml
@@ -195,7 +202,7 @@ Sample output:
 
 ```json
 {
-  "Task 1": {
+  "task 1": {
     "task_name": "Show contents of os-release",
     "data": [
       {
@@ -212,9 +219,7 @@ Sample output:
 }
 ```
 
-
-
-## ⚠️ Blocking Commands Warning
+## ⚠ Blocking Commands Warning
 
 Avoid using commands that **block indefinitely** — MeshCentral requires **non-blocking** execution.
 
@@ -222,7 +227,7 @@ Avoid using commands that **block indefinitely** — MeshCentral requires **non-
 
 ```bash
 apt upgrade       # Without -y
-sleep infinity
+sleep infinity    # Will never return
 ping 1.1.1.1      # Without -c
 ```
 
@@ -230,6 +235,7 @@ ping 1.1.1.1      # Without -c
 
 ```bash
 apt upgrade -y
+sleep 3s
 ping 1.1.1.1 -c 1
 ```
 
@@ -245,8 +251,6 @@ pip3 list
 ```
 
 The lists should match. If not, make sure the correct environment is activated.
-
-
 
 ## 📂 Project Structure (excerpt)
 
@@ -269,10 +273,8 @@ meshbook/
 ├── os_categories.json
 ├── requirements.txt
 ├── templates/
-│   └── config.conf.template
+│   └── api.conf.template
 ```
-
-
 
 ## 📄 License
 
