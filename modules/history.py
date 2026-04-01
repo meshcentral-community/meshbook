@@ -20,7 +20,7 @@ class History():
             except PermissionError:
                 Console.print_text(silent, Console.text_color.red + f"Failed to create directory, permission error.")
                 return
-        
+
         history_items = os.listdir(history_directory)
         if len(history_items) == 1:
             Console.print_text(silent, f"There is {len(history_items)} history item.")
@@ -45,4 +45,4 @@ class History():
         stitched_file = f"{self.history_directory}/meshbook_run_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}.log"
 
         with open(stitched_file, "x") as f:
-            f.write(history + "\n")
+            f.write(history)
