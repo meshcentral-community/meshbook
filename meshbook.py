@@ -65,7 +65,10 @@ async def init_connection(credentials: dict) -> meshctrl.Session:
     return session
 
 async def main():
-    local_categories_file = "./os_categories.json"
+    if not args.oscategories:
+        local_categories_file = "./os_categories.json"
+    else:
+        local_categories_file = args.oscategories
 
     just_fix_windows_console()
     '''
