@@ -65,11 +65,6 @@ async def init_connection(credentials: dict) -> meshctrl.Session:
     return session
 
 async def main():
-    if not args.oscategories:
-        local_categories_file = "./os_categories.json"
-    else:
-        local_categories_file = args.oscategories
-
     just_fix_windows_console()
     '''
     Main function where the program starts. Place from which all comands originate (eventually).
@@ -83,6 +78,11 @@ async def main():
         Console.print_text(args.silent,
                            Console.text_color.reset + "MeshBook Version: " + Console.text_color.yellow + str(meshbook_version))
         return
+
+    if not args.oscategories:
+        local_categories_file = "./os_categories.json"
+    else:
+        local_categories_file = args.oscategories
 
     if not args.meshbook:
         parser.print_help()
